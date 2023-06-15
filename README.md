@@ -1,4 +1,4 @@
-# Preencha aqui o título do projeto
+# Jardim Botânico da UFSM
 
 > 1. Baixe este arquivo e edite o texto em formato Markdown conforme as instruções a seguir.
 > 2. Substitua todos os blocos "Preencha aqui" por informações do seu projeto. 
@@ -27,16 +27,16 @@ Preencha aqui sugestões de tarefas a serem realizadas por usuários testadores 
 
 
 #### Desenvolvedor(es)
-Preencha nomes aqui
-
+Roberto José Mahl
 
 #### Tecnologias
 
-Preencha aqui uma lista detalhada de tecnologias usadas para frontend, backend e persistência de dados
+-Vue 2
 
 #### Ambiente de desenvolvimento
 
-Preencha aqui uma lista detalhada de ferramentas de desenvolvimento usadas
+-GitHub
+-VSCode
 
 #### Créditos
 
