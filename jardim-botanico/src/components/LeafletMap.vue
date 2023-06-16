@@ -29,6 +29,7 @@ export default defineComponent({
     this.createMap();
   },
   methods: {
+
     createMap() {
       var map = L.map("map", {
         center: [-29.7194, -53.7295],
@@ -52,8 +53,8 @@ export default defineComponent({
 
 <style>
 #map {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 100px);
   width: 100%;
-  z-index: -1;
+  z-index: 0;
 }
 </style>

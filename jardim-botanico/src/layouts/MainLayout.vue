@@ -2,23 +2,28 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
         <q-toolbar-title>
           Jardim Botânico UFSM
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" side="right" bordered>
       <q-list>
         <q-item-label header>
           Links essenciais
         </q-item-label>
-
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
+
+    <q-footer elevated>
+      <q-tabs class="bg-primary text-white shadow-2">
+        <q-route-tab name="profile" icon="ion-person" exact to="/profile" />
+        <q-route-tab name="map" icon="ion-map" exact to="/" />
+        <q-route-tab name="menu" icon="ion-menu" exact @click="toggleLeftDrawer" />
+      </q-tabs>
+    </q-footer>
 
     <q-page-container>
       <router-view />
@@ -98,6 +103,10 @@ export default defineComponent({
 
 <style>
 .q-header {
+  height: 50px
+}
+
+.q-footer {
   height: 50px
 }
 </style>
