@@ -1,5 +1,5 @@
 <template>
-  <q-item :to="link" exact clickable v-ripple>
+  <q-item :to="link" :class="textColor" exact clickable v-ripple>
     <q-item-section avatar>
       <q-icon :name="icon" />
     </q-item-section>
@@ -28,6 +28,11 @@ export default defineComponent({
     link: {
       type: String,
       required: true
+    },
+
+    textColor: {
+      type: String,
+      default: 'text-grey-9'
     },
   }
 })

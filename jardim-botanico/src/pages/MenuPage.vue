@@ -15,17 +15,26 @@ const menuLinks = [
     {
         title: 'Visitas',
         icon: 'ion-clipboard',
-        link: '/visits'
+        link: '/visits',
+        textColor: 'text-grey-6'
     },
     {
         title: 'Atividades',
         icon: 'ion-bulb',
-        link: '/activities'
+        link: '/activities',
+        textColor: 'text-grey-6'
     },
     {
         title: 'Social',
         icon: 'ion-people',
-        link: '/social'
+        link: '/social',
+        textColor: 'text-grey-6'
+    },
+    {
+        title: 'Configurações',
+        icon: 'ion-settings',
+        link: '/settings',
+        textColor: 'text-grey-6'
     },
 ]
 

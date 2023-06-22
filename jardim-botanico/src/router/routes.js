@@ -8,6 +8,13 @@ const routes = [
     ]
   },
   {
+    path: '/about',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/AboutPage.vue') }
+    ]
+  },
+  {
     path: '/menu',
     component: () => import('layouts/MainLayout.vue'),
     children: [
