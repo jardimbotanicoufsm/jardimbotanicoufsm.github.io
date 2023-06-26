@@ -29,9 +29,17 @@ export default defineComponent({
 		var map = this.createMap();
 		this.readSpreadsheet(map);
 	},
+	data() {
+		return {
+			categorias: {
+				Edificações: { color: 'red', items: [] },
+				Coleções: { color: 'green', items: [] },
+				Atrativos: { color: 'orange', items: [] },
+				Trilha: { color: 'grey', items: [] },
+			}
+		};
+	},
 	methods: {
-
-
 		createMap() {
 
 			var map = L.map("map", {
@@ -50,54 +58,69 @@ export default defineComponent({
 		},
 
 		async readSpreadsheet(map) {
-			const spreadsheetId = '1-3t23mTmuvJaVK6NAN-ivBr9fbE8NGZ6RNMQPwvd_oc'; // Replace with the actual spreadsheet ID
-			const apiKey = 'AIzaSyA_LT1DlQ_iArm1fGqxIK-YpjAOUSoZgZo'; // Replace with your API key
+			const spreadsheetId = '1-3t23mTmuvJaVK6NAN-ivBr9fbE8NGZ6RNMQPwvd_oc';
+			const apiKey = 'AIzaSyA_LT1DlQ_iArm1fGqxIK-YpjAOUSoZgZo';
 
 			const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/pontos?key=${apiKey}`;
 
 			api.get(url)
 				.then((response) => {
 					const rows = response.data.values;
-					if (rows.length === 0) {
-						return;
-					}
 
-					const header = rows[0];
-					const data = rows.slice(1);
-					this.createPins(map, header, data);
-
+					this.createPoints(map, rows[0], rows.slice(1));
 				})
-				.catch(() => {
+				.catch((error) => {
 					this.$q.notify({
 						color: 'negative',
 						position: 'bottom',
-						message: 'Impossível carregar dados',
+						message: `Impossível carregar dados: ${error.message}`,
 						icon: 'report_problem'
 					});
 				})
 		},
 
-		createPins(map, header, data) {
+		createPoints(map, header, data) {
 			data.forEach(row => {
-				const ponto_turistico = {};
+				const pontoTuristico = {};
 				row.forEach((value, index) => {
-					ponto_turistico[header[index]] = value;
+					pontoTuristico[header[index]] = value;
 				});
 
-				if (ponto_turistico.id == null || ponto_turistico.latitude == null || ponto_turistico.longitude == null)
+				if (pontoTuristico.id == null || pontoTuristico.latitude == null || pontoTuristico.longitude == null)
 					return;
 
-				const marker = L.marker([ponto_turistico.latitude, ponto_turistico.longitude], {
-					title: ponto_turistico.nome
+				this.categorias[pontoTuristico.categoria].items.push(pontoTuristico);
+			});
+
+			this.displayMarkers(map, this.categorias.Atrativos);
+			this.displayMarkers(map, this.categorias.Coleções);
+			this.displayMarkers(map, this.categorias.Edificações);
+		},
+
+		displayMarkers(map, pontosTuristicos) {
+			pontosTuristicos.items.forEach(pontoTuristico => {
+
+				var icon = new L.Icon({
+					iconUrl: `assets/img/marker-icon-2x-${pontosTuristicos.color}.png`,
+					shadowUrl: 'assets/img/marker-shadow.png',
+					iconSize: [25, 41],
+					iconAnchor: [12, 41],
+					popupAnchor: [1, -34],
+					shadowSize: [41, 41]
+				});
+
+				const marker = L.marker([pontoTuristico.latitude, pontoTuristico.longitude], {
+					title: pontoTuristico.nome,
+					icon: icon
 				});
 
 				let img = '';
-				if (ponto_turistico.links != null) {
-					img = `<br><img src="${ponto_turistico.links}" width="100%">`;
+				if (pontoTuristico.links != null) {
+					img = `< br > <img src="${pontoTuristico.links}" width="100%">`;
 				}
 				marker
 					.bindPopup(
-						`<b>${ponto_turistico.nome}</b><br>${ponto_turistico.descricao}${img}`
+						`<b>${pontoTuristico.nome}</b><br>${pontoTuristico.descricao}${img}`
 					)
 					.openPopup();
 
