@@ -25,6 +25,12 @@ const menuLinks = [
         textColor: 'text-grey-6'
     },
     {
+        title: 'Coleções',
+        icon: 'ion-filing',
+        link: '/colections',
+        textColor: 'text-grey-6'
+    },
+    {
         title: 'Social',
         icon: 'ion-people',
         link: '/social',

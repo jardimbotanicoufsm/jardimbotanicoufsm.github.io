@@ -14,9 +14,12 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "axios": "^1.4.0",
     "core-js": "^3.6.5",
+    "crypto": "^1.0.1",
     "leaflet": "^1.9.4",
     "quasar": "^2.6.0",
+    "stream": "^0.0.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"
   },
