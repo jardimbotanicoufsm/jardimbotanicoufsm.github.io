@@ -11,7 +11,7 @@
 
     <q-footer elevated>
       <q-tabs class="bg-primary text-white shadow-2">
-        <q-route-tab name="profile" icon="ion-person" exact to="/profile" />
+        <!--<q-route-tab name="profile" icon="ion-person" exact to="/profile" />-->
         <q-route-tab name="map" icon="ion-map" exact to="/" />
         <q-route-tab name="menu" icon="ion-menu" exact to="/menu" />
       </q-tabs>

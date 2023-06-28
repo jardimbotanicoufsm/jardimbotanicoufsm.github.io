@@ -13,6 +13,12 @@ const menuLinks = [
         link: '/about'
     },
     {
+        title: 'Acervo',
+        icon: 'ion-filing',
+        link: '/collection',
+    },
+    /*
+    {
         title: 'Visitas',
         icon: 'ion-clipboard',
         link: '/visits',
@@ -42,6 +48,7 @@ const menuLinks = [
         link: '/settings',
         textColor: 'text-grey-6'
     },
+    */
 ]
 
 export default defineComponent({
