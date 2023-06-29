@@ -2,16 +2,27 @@
 	<div id="map"></div>
 
 	<q-page-sticky position="top-right" :offset="[20, 20]">
-		<q-btn fab icon="ion-leaf" color="green" @click="filterMarkers(this.categorias.Coleções)" />
-		<!--TODO: <div style="margin-top: 5px;">Coleções</div>-->
+		<q-btn :class="activeFilter == categorias.Coleções ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
+			@click="filterMarkers(this.categorias.Coleções)">
+			<q-tooltip>Coleções</q-tooltip>
+		</q-btn>
 	</q-page-sticky>
 	<q-page-sticky position="top-right" :offset="[20, 90]">
-		<q-btn fab icon="ion-home" color="red" @click="filterMarkers(this.categorias.Edificações)" />
-		<!--TODO: <div style="margin-top: 5px;">Edificações</div>-->
+		<q-btn :class="activeFilter == categorias.Edificações ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
+			@click="filterMarkers(this.categorias.Edificações)">
+			<q-tooltip>Edificações</q-tooltip>
+		</q-btn>
 	</q-page-sticky>
 	<q-page-sticky position="top-right" :offset="[20, 160]">
-		<q-btn fab icon="ion-flower" color="orange" @click="filterMarkers(this.categorias.Atrativos)" />
-		<!--TODO: <div style="margin-top: 5px;">Atrativos</div>-->
+		<q-btn :class="activeFilter == categorias.Atrativos ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
+			@click="filterMarkers(this.categorias.Atrativos)">
+			<q-tooltip>Atrativos</q-tooltip>
+		</q-btn>
+	</q-page-sticky>
+	<q-page-sticky v-if="activeFilter != null" position="top-right" :offset="[20, 230]">
+		<q-btn fab icon="ion-close" color="grey" @click="filterMarkers(null)">
+			<q-tooltip>Limpar filtros</q-tooltip>
+		</q-btn>
 	</q-page-sticky>
 
 	<q-page-sticky position="bottom-left" :offset="[20, 20]">
@@ -34,6 +45,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			activeFilter: null,
 			map: null,
 			pontos: [],
 			categorias: {
@@ -139,8 +151,15 @@ export default defineComponent({
 		},
 
 		filterMarkers(category) {
+			this.activeFilter = category;
 			this.hideMarkers();
-			this.displayMarkers(category);
+			if (category != null) {
+				this.displayMarkers(category);
+			} else {
+				this.displayMarkers(this.categorias.Atrativos);
+				this.displayMarkers(this.categorias.Coleções);
+				this.displayMarkers(this.categorias.Edificações);
+			}
 		},
 
 		hideMarkers() {
