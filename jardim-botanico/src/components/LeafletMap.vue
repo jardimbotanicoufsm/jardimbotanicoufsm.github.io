@@ -29,7 +29,7 @@ import { api } from 'boot/axios'
 
 export default defineComponent({
 	mounted() {
-		this.map = this.createMap();
+		this.createMap();
 		this.readSpreadsheet();
 	},
 	data() {
@@ -58,7 +58,7 @@ export default defineComponent({
 				attribution: "&copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a>"
 			}).addTo(map);
 
-			return map;
+			this.map = map;
 		},
 
 		readSpreadsheet() {

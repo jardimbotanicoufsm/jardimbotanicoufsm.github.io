@@ -1,5 +1,6 @@
 <template>
     <div class="q-pl-md q-pr-md">
+        <h5>Acervo</h5>
         <CollectionList></CollectionList>
     </div>
 </template>

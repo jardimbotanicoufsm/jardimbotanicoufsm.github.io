@@ -1,9 +1,7 @@
 <template>
-    <q-page class="flex flex-center">
-        <q-list padding class="rounded-borders">
-            <MenuListItem v-for="menuLink in menuLinks" v-bind="menuLink" v-bind:key="menuLink.title" />
-        </q-list>
-    </q-page>
+    <q-list padding class="rounded-borders">
+        <MenuListItem v-for="menuLink in menuLinks" v-bind="menuLink" v-bind:key="menuLink.title" />
+    </q-list>
 </template>
   
 <script>

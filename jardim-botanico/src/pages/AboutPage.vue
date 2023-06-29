@@ -1,6 +1,6 @@
 <template>
     <div class="q-pl-md q-pr-md">
-        <h4 class="text-grey-9">Apresentação</h4>
+        <h5>Apresentação</h5>
         <p>
             Somos o Jardim Botânico da Universidade Federal de Santa Maria,
             Órgão Suplementar do Centro de Ciências Naturais e Exatas da Universidade Federal de Santa Maria (CCNE/UFSM).

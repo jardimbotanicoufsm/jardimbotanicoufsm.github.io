@@ -1,5 +1,7 @@
 <template>
-    <MenuList :menuLinks="menuLinks" />
+    <div class="q-pl-md q-pr-md">
+        <MenuList :menuLinks="menuLinks" />
+    </div>
 </template>
   
 <script>
