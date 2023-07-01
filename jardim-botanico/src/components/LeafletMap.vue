@@ -35,6 +35,8 @@
 
 <script>
 import * as L from 'leaflet';
+import 'leaflet.locatecontrol';
+import 'leaflet.locatecontrol/dist/L.Control.Locate.css';
 import { defineComponent } from 'vue';
 import { api } from 'boot/axios'
 
@@ -61,13 +63,18 @@ export default defineComponent({
 
 			var map = L.map("map", {
 				center: [-29.7194, -53.7295],
-				zoom: 17,
-				zoomControl: false
+				zoom: 17
 			});
 
 			L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 				maxZoom: 19,
 				attribution: "&copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a>"
+			}).addTo(map);
+
+			L.control.locate({
+				locateOptions: {
+					enableHighAccuracy: true
+				}
 			}).addTo(map);
 
 			this.map = map;
