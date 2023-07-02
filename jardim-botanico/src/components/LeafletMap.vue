@@ -55,7 +55,7 @@ export default defineComponent({
 			activeFilter: null,
 			map: null,
 			hikingTrailPoints: [],
-			pontos: [],
+			points: [],
 			categorias: {
 				Edificações: { color: 'red' },
 				Coleções: { color: 'green' },
@@ -127,13 +127,13 @@ export default defineComponent({
 					point[header[index]] = value;
 				});
 
-				if (point.id == null || point.latitude == null || point.longitude == null)
+				if (point.id == null || point.latitude == null || point.longitude == null || point.categoria == null)
 					return;
 
 				point.id = parseInt(point.id);
 				point.marker = this.createMarker(point);
 
-				this.pontos.push(point);
+				this.points.push(point);
 			});
 		},
 
@@ -141,7 +141,7 @@ export default defineComponent({
 			if (point.categoria == 'Trilha')
 				return null;
 
-			var icon = new L.Icon({
+			const icon = new L.Icon({
 				iconUrl: `assets/img/marker-icon-2x-${this.categorias[point.categoria].color}.png`,
 				shadowUrl: 'assets/img/marker-shadow.png',
 				iconSize: [25, 41],
@@ -149,40 +149,48 @@ export default defineComponent({
 				popupAnchor: [1, -34],
 				shadowSize: [41, 41]
 			});
-
 			const marker = L.marker([point.latitude, point.longitude], {
 				title: point.nome,
 				icon: icon
 			});
 
+			let name = '';
+			if (point.nome != null) {
+				name = `<b>${point.nome}</b><br>`;
+			}
+			let description = '';
+			if (description != null) {
+				description = `${point.descricao}<br>`;
+			}
 			let img = '';
 			if (point.links != null) {
-				img = `<br> <img src="${point.links}" width="100%">`;
+				img = `<img src="${point.links}" width="100%">`;
 			}
-
-			marker.bindPopup(`<b>${point.nome}</b><br>${point.descricao}${img}`).openPopup();
+			marker.bindPopup(`${name}${description}${img}`).openPopup();
 
 			return marker;
 		},
 
 		displayMarkers(category) {
-			this.pontos.filter(ponto => ponto.categoria === category).forEach(ponto => {
-				ponto.marker.addTo(this.map);
+			this.points.filter(point => point.categoria === category).forEach(point => {
+				point.marker.addTo(this.map);
 			});
 		},
 
 		displayHikingTrailMarkers() {
 			this.hideMarkers();
 
-			this.pontos.filter(ponto => this.hikingTrailPoints.includes(ponto.id)).forEach(ponto => {
-				if (ponto.marker !== null) {
-					ponto.marker.addTo(this.map);
+			this.points.filter(point => this.hikingTrailPoints.includes(point.id)).forEach(point => {
+				if (point.marker !== null) {
+					point.marker.addTo(this.map);
 				}
 			});
 
-			var trackCoordinates = this.pontos.filter(ponto => this.hikingTrailPoints.includes(ponto.id)).map(function (point) {
-				return [point.latitude, point.longitude];
-			});
+			var trackCoordinates = this.hikingTrailPoints
+				.map(pointId => this.points.find(point => point.id === pointId))
+				.filter(point => point !== undefined)
+				.map(point => [point.latitude, point.longitude]);
+
 			var polyline = L.polyline(trackCoordinates, { color: 'red' }).addTo(this.map);
 			this.map.fitBounds(polyline.getBounds());
 		},
@@ -200,8 +208,10 @@ export default defineComponent({
 		},
 
 		hideMarkers() {
-			this.pontos.forEach(ponto => {
-				ponto.marker.remove();
+			this.points.forEach(point => {
+				if (point.marker !== null) {
+					point.marker.remove();
+				}
 			});
 		},
 	},
