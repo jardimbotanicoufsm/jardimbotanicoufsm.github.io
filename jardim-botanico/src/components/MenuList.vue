@@ -1,5 +1,5 @@
 <template>
-    <q-list padding class="rounded-borders">
+    <q-list padding>
         <MenuListItem v-for="menuLink in menuLinks" v-bind="menuLink" v-bind:key="menuLink.title" />
     </q-list>
 </template>

@@ -19,14 +19,14 @@
 			<q-tooltip>Atrativos</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky v-if="activeFilter != null" position="top-right" :offset="[20, 230]">
+	<q-page-sticky position="top-right" :offset="[20, 230]" v-if="activeFilter != null">
 		<q-btn fab icon="ion-close" color="grey" @click="filterMarkers(null)">
 			<q-tooltip>Limpar filtros</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
 
 	<q-page-sticky position="bottom-left" :offset="[20, 20]">
-		<q-btn fab icon="ion-walk" color="grey" @click="handleClick()" />
+		<q-btn fab icon="ion-walk" color="grey" @click="handleHikingTrailsClick()" />
 	</q-page-sticky>
 	<q-page-sticky position="bottom-right" :offset="[20, 20]">
 		<q-btn fab icon="ion-camera" color="grey" @click="handleClick()" />
@@ -35,20 +35,28 @@
 
 <script>
 import * as L from 'leaflet';
+
 import 'leaflet.locatecontrol';
 import 'leaflet.locatecontrol/dist/L.Control.Locate.css';
+
 import { defineComponent } from 'vue';
 import { api } from 'boot/axios'
 
 export default defineComponent({
 	mounted() {
+		const hikingTrailPointsParam = this.$route.params.hikingTrailPoints;
+		if (hikingTrailPointsParam) {
+			this.hikingTrailPoints = JSON.parse(hikingTrailPointsParam);
+		}
 		this.createMap();
 		this.readSpreadsheet();
 	},
+
 	data() {
 		return {
 			activeFilter: null,
 			map: null,
+			hikingTrailPoints: [],
 			pontos: [],
 			categorias: {
 				Edificações: { color: 'red', markers: [] },
@@ -58,9 +66,10 @@ export default defineComponent({
 			}
 		};
 	},
-	methods: {
-		createMap() {
 
+	methods: {
+
+		createMap() {
 			var map = L.map("map", {
 				center: [-29.7194, -53.7295],
 				zoom: 17
@@ -96,9 +105,13 @@ export default defineComponent({
 
 					this.createPoints(rows[0], rows.slice(1));
 					this.createMarkers();
-					this.displayMarkers(this.categorias.Atrativos);
-					this.displayMarkers(this.categorias.Coleções);
-					this.displayMarkers(this.categorias.Edificações);
+					if (this.hikingTrailPoints.length === 0) {
+						this.displayMarkers(this.categorias.Atrativos);
+						this.displayMarkers(this.categorias.Coleções);
+						this.displayMarkers(this.categorias.Edificações);
+					} else {
+						this.displayHikingTrailMarkers();
+					}
 				})
 				.catch((error) => {
 					this.$q.notify({
@@ -120,12 +133,16 @@ export default defineComponent({
 				if (pontoTuristico.id == null || pontoTuristico.latitude == null || pontoTuristico.longitude == null)
 					return;
 
+				pontoTuristico.id = parseInt(pontoTuristico.id);
+
 				this.pontos.push(pontoTuristico);
 			});
 		},
 
 		createMarkers() {
 			this.pontos.forEach(ponto => {
+				if (ponto.categoria == 'Trilha')
+					return;
 
 				var icon = new L.Icon({
 					iconUrl: `assets/img/marker-icon-2x-${this.categorias[ponto.categoria].color}.png`,
@@ -155,6 +172,45 @@ export default defineComponent({
 			category.markers.forEach(marker => {
 				marker.addTo(this.map);
 			});
+		},
+
+		displayHikingTrailMarkers() {
+			this.hideMarkers();
+
+			this.pontos.filter(ponto => this.hikingTrailPoints.includes(ponto.id)).forEach(ponto => {
+				var icon = new L.Icon({
+					iconUrl: `assets/img/marker-icon-2x-${this.categorias[ponto.categoria].color}.png`,
+					shadowUrl: 'assets/img/marker-shadow.png',
+					iconSize: [25, 41],
+					iconAnchor: [12, 41],
+					popupAnchor: [1, -34],
+					shadowSize: [41, 41]
+				});
+
+				const marker = L.marker([ponto.latitude, ponto.longitude], {
+					title: ponto.nome,
+					icon: icon
+				});
+
+				let img = '';
+				if (ponto.links != null) {
+					img = `<br> <img src="${ponto.links}" width="100%">`;
+				}
+				marker.bindPopup(`<b>${ponto.nome}</b><br>${ponto.descricao}${img}`).openPopup();
+
+				this.categorias.Trilha.markers.push(marker);
+			});
+
+			var trackCoordinates = this.pontos.filter(ponto => this.hikingTrailPoints.includes(ponto.id)).map(function (point) {
+				return [point.latitude, point.longitude];
+			});
+
+			var polyline = L.polyline(trackCoordinates, { color: 'red' }).addTo(this.map);
+
+			// zoom the map to the polyline
+			this.map.fitBounds(polyline.getBounds());
+
+			this.displayMarkers(this.categorias.Trilha);
 		},
 
 		filterMarkers(category) {
@@ -187,6 +243,10 @@ export default defineComponent({
 		handleClick() {
 			alert('Button 2 clicked');
 		},
+
+		handleHikingTrailsClick() {
+			this.$router.push('/hikingTrails');
+		}
 	},
 });
 </script>

@@ -10,13 +10,9 @@ import { defineComponent } from 'vue'
 import CollectionList from 'src/components/CollectionList.vue'
 
 export default defineComponent({
-    name: 'CollectionPage',
+    name: 'CollectionListPage',
     components: {
         CollectionList
     },
-    setup() {
-        return {
-        }
-    }
 })
 </script>

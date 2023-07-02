@@ -8,6 +8,13 @@ const routes = [
     ]
   },
   {
+    path: '/hikingTrail/:hikingTrailPoints',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/HikingTrailPage.vue') }
+    ]
+  },
+  {
     path: '/about',
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -18,7 +25,14 @@ const routes = [
     path: '/collection',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/CollectionPage.vue') }
+      { path: '', component: () => import('pages/CollectionListPage.vue') }
+    ]
+  },
+  {
+    path: '/hikingTrails',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/HikingTrailListPage.vue') }
     ]
   },
   {
