@@ -1,35 +1,33 @@
 <template>
 	<div id="map"></div>
 
-	<q-page-sticky position="top-right" :offset="[20, 20]">
+	<q-page-sticky position="top-right" :offset="[20, 20]" v-if="this.hikingTrailPoints.length === 0">
 		<q-btn :class="activeFilter == categorias.Coleções ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
-			@click="filterMarkers(this.categorias.Coleções)">
+			@click="filterMarkers('Coleções')">
 			<q-tooltip>Coleções</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 90]">
+	<q-page-sticky position="top-right" :offset="[20, 90]" v-if="this.hikingTrailPoints.length === 0">
 		<q-btn :class="activeFilter == categorias.Edificações ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
-			@click="filterMarkers(this.categorias.Edificações)">
+			@click="filterMarkers('Edificações')">
 			<q-tooltip>Edificações</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 160]">
+	<q-page-sticky position="top-right" :offset="[20, 160]" v-if="this.hikingTrailPoints.length === 0">
 		<q-btn :class="activeFilter == categorias.Atrativos ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
-			@click="filterMarkers(this.categorias.Atrativos)">
+			@click="filterMarkers('Atrativos')">
 			<q-tooltip>Atrativos</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 230]" v-if="activeFilter != null">
+	<q-page-sticky position="top-right" :offset="[20, 230]"
+		v-if="this.hikingTrailPoints.length === 0 && activeFilter != null">
 		<q-btn fab icon="ion-close" color="grey" @click="filterMarkers(null)">
 			<q-tooltip>Limpar filtros</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
 
 	<q-page-sticky position="bottom-left" :offset="[20, 20]">
-		<q-btn fab icon="ion-walk" color="grey" @click="handleHikingTrailsClick()" />
-	</q-page-sticky>
-	<q-page-sticky position="bottom-right" :offset="[20, 20]">
-		<q-btn fab icon="ion-camera" color="grey" @click="handleClick()" />
+		<q-btn fab icon="ion-walk" color="grey" @click="this.$router.push('/hikingTrails');" />
 	</q-page-sticky>
 </template>
 
@@ -59,10 +57,10 @@ export default defineComponent({
 			hikingTrailPoints: [],
 			pontos: [],
 			categorias: {
-				Edificações: { color: 'red', markers: [] },
-				Coleções: { color: 'green', markers: [] },
-				Atrativos: { color: 'orange', markers: [] },
-				Trilha: { color: 'grey', markers: [] },
+				Edificações: { color: 'red' },
+				Coleções: { color: 'green' },
+				Atrativos: { color: 'orange' },
+				Trilha: { color: 'grey' },
 			}
 		};
 	},
@@ -104,11 +102,10 @@ export default defineComponent({
 					const rows = response.data.values;
 
 					this.createPoints(rows[0], rows.slice(1));
-					this.createMarkers();
 					if (this.hikingTrailPoints.length === 0) {
-						this.displayMarkers(this.categorias.Atrativos);
-						this.displayMarkers(this.categorias.Coleções);
-						this.displayMarkers(this.categorias.Edificações);
+						this.displayMarkers('Atrativos');
+						this.displayMarkers('Coleções');
+						this.displayMarkers('Edificações');
 					} else {
 						this.displayHikingTrailMarkers();
 					}
@@ -125,52 +122,52 @@ export default defineComponent({
 
 		createPoints(header, data) {
 			data.forEach(row => {
-				const pontoTuristico = {};
+				const point = {};
 				row.forEach((value, index) => {
-					pontoTuristico[header[index]] = value;
+					point[header[index]] = value;
 				});
 
-				if (pontoTuristico.id == null || pontoTuristico.latitude == null || pontoTuristico.longitude == null)
+				if (point.id == null || point.latitude == null || point.longitude == null)
 					return;
 
-				pontoTuristico.id = parseInt(pontoTuristico.id);
+				point.id = parseInt(point.id);
+				point.marker = this.createMarker(point);
 
-				this.pontos.push(pontoTuristico);
+				this.pontos.push(point);
 			});
 		},
 
-		createMarkers() {
-			this.pontos.forEach(ponto => {
-				if (ponto.categoria == 'Trilha')
-					return;
+		createMarker(point) {
+			if (point.categoria == 'Trilha')
+				return null;
 
-				var icon = new L.Icon({
-					iconUrl: `assets/img/marker-icon-2x-${this.categorias[ponto.categoria].color}.png`,
-					shadowUrl: 'assets/img/marker-shadow.png',
-					iconSize: [25, 41],
-					iconAnchor: [12, 41],
-					popupAnchor: [1, -34],
-					shadowSize: [41, 41]
-				});
-
-				const marker = L.marker([ponto.latitude, ponto.longitude], {
-					title: ponto.nome,
-					icon: icon
-				});
-
-				let img = '';
-				if (ponto.links != null) {
-					img = `<br> <img src="${ponto.links}" width="100%">`;
-				}
-				marker.bindPopup(`<b>${ponto.nome}</b><br>${ponto.descricao}${img}`).openPopup();
-
-				this.categorias[ponto.categoria].markers.push(marker);
+			var icon = new L.Icon({
+				iconUrl: `assets/img/marker-icon-2x-${this.categorias[point.categoria].color}.png`,
+				shadowUrl: 'assets/img/marker-shadow.png',
+				iconSize: [25, 41],
+				iconAnchor: [12, 41],
+				popupAnchor: [1, -34],
+				shadowSize: [41, 41]
 			});
+
+			const marker = L.marker([point.latitude, point.longitude], {
+				title: point.nome,
+				icon: icon
+			});
+
+			let img = '';
+			if (point.links != null) {
+				img = `<br> <img src="${point.links}" width="100%">`;
+			}
+
+			marker.bindPopup(`<b>${point.nome}</b><br>${point.descricao}${img}`).openPopup();
+
+			return marker;
 		},
 
 		displayMarkers(category) {
-			category.markers.forEach(marker => {
-				marker.addTo(this.map);
+			this.pontos.filter(ponto => ponto.categoria === category).forEach(ponto => {
+				ponto.marker.addTo(this.map);
 			});
 		},
 
@@ -178,39 +175,16 @@ export default defineComponent({
 			this.hideMarkers();
 
 			this.pontos.filter(ponto => this.hikingTrailPoints.includes(ponto.id)).forEach(ponto => {
-				var icon = new L.Icon({
-					iconUrl: `assets/img/marker-icon-2x-${this.categorias[ponto.categoria].color}.png`,
-					shadowUrl: 'assets/img/marker-shadow.png',
-					iconSize: [25, 41],
-					iconAnchor: [12, 41],
-					popupAnchor: [1, -34],
-					shadowSize: [41, 41]
-				});
-
-				const marker = L.marker([ponto.latitude, ponto.longitude], {
-					title: ponto.nome,
-					icon: icon
-				});
-
-				let img = '';
-				if (ponto.links != null) {
-					img = `<br> <img src="${ponto.links}" width="100%">`;
+				if (ponto.marker !== null) {
+					ponto.marker.addTo(this.map);
 				}
-				marker.bindPopup(`<b>${ponto.nome}</b><br>${ponto.descricao}${img}`).openPopup();
-
-				this.categorias.Trilha.markers.push(marker);
 			});
 
 			var trackCoordinates = this.pontos.filter(ponto => this.hikingTrailPoints.includes(ponto.id)).map(function (point) {
 				return [point.latitude, point.longitude];
 			});
-
 			var polyline = L.polyline(trackCoordinates, { color: 'red' }).addTo(this.map);
-
-			// zoom the map to the polyline
 			this.map.fitBounds(polyline.getBounds());
-
-			this.displayMarkers(this.categorias.Trilha);
 		},
 
 		filterMarkers(category) {
@@ -219,34 +193,17 @@ export default defineComponent({
 			if (category != null) {
 				this.displayMarkers(category);
 			} else {
-				this.displayMarkers(this.categorias.Atrativos);
-				this.displayMarkers(this.categorias.Coleções);
-				this.displayMarkers(this.categorias.Edificações);
+				this.displayMarkers('Atrativos');
+				this.displayMarkers('Coleções');
+				this.displayMarkers('Edificações');
 			}
 		},
 
 		hideMarkers() {
-			this.categorias.Atrativos.markers.forEach(marker => {
-				marker.remove();
-			});
-			this.categorias.Coleções.markers.forEach(marker => {
-				marker.remove();
-			});
-			this.categorias.Edificações.markers.forEach(marker => {
-				marker.remove();
-			});
-			this.categorias.Trilha.markers.forEach(marker => {
-				marker.remove();
+			this.pontos.forEach(ponto => {
+				ponto.marker.remove();
 			});
 		},
-
-		handleClick() {
-			alert('Button 2 clicked');
-		},
-
-		handleHikingTrailsClick() {
-			this.$router.push('/hikingTrails');
-		}
 	},
 });
 </script>
