@@ -18,6 +18,7 @@ https://jardimbotanicoufsm.surge.sh
 - Consulta de detalhes dos pontos no mapa
 - Filtragem
 - Consulta de trilhas
+- Geolocalização
 
 #### Desenvolvedor(es)
 Roberto José Mahl
