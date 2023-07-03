@@ -19,6 +19,7 @@ https://jardimbotanicoufsm.surge.sh
 - Filtragem
 - Consulta de trilhas
 - Geolocalização
+- Instalação do pwa mobile/pc
 
 #### Desenvolvedor(es)
 Roberto José Mahl
