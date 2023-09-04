@@ -1,21 +1,21 @@
 <template>
 	<div id="map"></div>
 
-	<q-page-sticky position="top-right" :offset="[20, 20]" v-if="this.hikingTrailPoints.length === 0">
-		<q-btn :class="activeFilter == categorias.Coleções ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
-			@click="filterMarkers('Coleções')">
-			<q-tooltip>Coleções</q-tooltip>
+	<q-page-sticky position="top-right" :offset="[20, 20]">
+		<q-btn :class="activeFilter == categorias.Acervo ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
+			@click="filterMarkers('Acervo')">
+			<q-tooltip>Acervo</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 90]" v-if="this.hikingTrailPoints.length === 0">
-		<q-btn :class="activeFilter == categorias.Edificações ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
-			@click="filterMarkers('Edificações')">
-			<q-tooltip>Edificações</q-tooltip>
+	<q-page-sticky position="top-right" :offset="[20, 90]">
+		<q-btn :class="activeFilter == categorias.Utilidade ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
+			@click="filterMarkers('Utilidade')">
+			<q-tooltip>Utilidades</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 160]" v-if="this.hikingTrailPoints.length === 0">
-		<q-btn :class="activeFilter == categorias.Atrativos ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
-			@click="filterMarkers('Atrativos')">
+	<q-page-sticky position="top-right" :offset="[20, 160]">
+		<q-btn :class="activeFilter == categorias.Atrativo ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
+			@click="filterMarkers('Atrativo')">
 			<q-tooltip>Atrativos</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
@@ -54,14 +54,16 @@ export default defineComponent({
 		return {
 			activeFilter: null,
 			map: null,
-			hikingTrailPoints: [],
-			points: [],
+			hikingTrailPoints: [], //TODO: rethink this
 			categorias: {
-				Edificações: { color: 'red' },
-				Coleções: { color: 'green' },
-				Atrativos: { color: 'orange' },
-				Trilha: { color: 'grey' },
-			}
+				Utilidade: { color: 'red' },
+				Atrativo: { color: 'orange' },
+				Acervo: { color: 'green' },
+			},
+			pointsOfInterest: [], //TODO: move to store
+			collection: [], //TODO: move to store
+			spreadsheetId: '15pkvRPsPOIQJEe2hKn9XCHuKHQ5buoL2QiQnRJHu4yI',
+			apiKey: 'AIzaSyA_LT1DlQ_iArm1fGqxIK-YpjAOUSoZgZo' //TODO: Replace key for project API key
 		};
 	},
 
@@ -87,130 +89,209 @@ export default defineComponent({
 			this.map = map;
 		},
 
-		readSpreadsheet() {
-			// SpreadsheetId of altered copy
-			const spreadsheetId = '1SELKTKPVt44lT-Go6mOJ9L43viJ2GXC9aco19VEf2A4';
-
-			// Original spreadsheetId
-			//const spreadsheetId = '1-3t23mTmuvJaVK6NAN-ivBr9fbE8NGZ6RNMQPwvd_oc';
-
-			const apiKey = 'AIzaSyA_LT1DlQ_iArm1fGqxIK-YpjAOUSoZgZo';
-
-			const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/pontos?key=${apiKey}`;
-			api.get(url)
-				.then((response) => {
-					const rows = response.data.values;
-
-					this.createPoints(rows[0], rows.slice(1));
-					if (this.hikingTrailPoints.length === 0) {
-						this.displayMarkers('Atrativos');
-						this.displayMarkers('Coleções');
-						this.displayMarkers('Edificações');
-					} else {
-						this.displayHikingTrailMarkers();
-					}
-				})
-				.catch((error) => {
-					this.$q.notify({
-						color: 'negative',
-						position: 'bottom',
-						message: `Impossível carregar dados: ${error.message}`,
-						icon: 'report_problem'
-					});
-				})
-		},
-
-		createPoints(header, data) {
-			data.forEach(row => {
-				const point = {};
-				row.forEach((value, index) => {
-					point[header[index]] = value;
-				});
-
-				if (point.id == null || point.latitude == null || point.longitude == null || point.categoria == null)
-					return;
-
-				point.id = parseInt(point.id);
-				point.marker = this.createMarker(point);
-
-				this.points.push(point);
+		handleReadError(error, code) {
+			this.$q.notify({
+				color: 'negative',
+				position: 'bottom',
+				message: `Impossível carregar dados (${code}): ${error.message}`,
+				icon: 'report_problem'
 			});
 		},
 
-		createMarker(point) {
-			if (point.categoria == 'Trilha')
+		async readSpreadsheet() {
+			try {
+				const pointsOfInterestPromise = this.readSheet('pontos_interesse');
+				const collectionPromise = this.readSheet('acervo');
+
+				pointsOfInterestPromise.then(pointsOfInterest => {
+					this.handlePointOfInterestSpreadsheetData(pointsOfInterest);
+					this.filterMarkers(null);
+				}).catch(error => {
+					this.handleReadError(error, 3);
+				});
+				collectionPromise.then(collection => {
+					this.handleCollectionSpreadsheetData(collection);
+					this.filterMarkers(null);
+				}).catch(error => {
+					this.handleReadError(error, 4);
+				});
+			} catch (error) {
+				this.handleReadError(error, 2);
+			}
+		},
+
+		async readSheet(sheetName) {
+			try {
+				const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}?key=${this.apiKey}`;
+				const response = await api.get(url);
+
+				if (response.data && response.data.values) {
+					return response.data.values;
+				} else {
+					return [];
+				}
+			} catch (error) {
+				this.handleReadError(error, 1);
+				return [];
+			}
+		},
+
+		handlePointOfInterestSpreadsheetData(data) {
+			const header = data[0];
+			const body = data.slice(1);
+
+			body.forEach(row => {
+				const poi = {};
+				row.forEach((value, index) => {
+					poi[header[index]] = value;
+				});
+				if (poi.id == null || poi.categoria == null || poi.nome == null || poi.latitude == null || poi.longitude == null)
+					return;
+
+				poi.id = parseInt(poi.id);
+				poi.marker = this.createMarker(this.categorias[poi.categoria].color,
+					poi.latitude,
+					poi.longitude,
+					poi.nome,
+					poi.descricao,
+					this.handleLinks(poi.generic_links, poi.drive_links)
+				);
+
+				this.pointsOfInterest.push(poi);
+			});
+		},
+
+		handleCollectionSpreadsheetData(data) {
+			const header = data[0];
+			const body = data.slice(1);
+
+			body.forEach(row => {
+				const colItem = {};
+				row.forEach((value, index) => {
+					colItem[header[index]] = value;
+				});
+				if (colItem.id == null || colItem.nome == null || colItem.latitude == null || colItem.longitude == null)
+					return;
+
+				colItem.id = parseInt(colItem.id);
+				colItem.marker = this.createMarker(green,
+					colItem.latitude,
+					colItem.longitude,
+					colItem.nome + '(' + colItem.nome_cientifico + ')',
+					'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem,
+					this.handleLinks(colItem.generic_links, colItem.drive_links)
+				);
+
+				this.collection.push(colItem);
+			});
+		},
+
+		handleLinks(generic_links, drive_links) {
+			if (generic_links == null && drive_links == null)
 				return null;
 
+			let links = [];
+			if (generic_links != null) {
+				generic_links.forEach(link => {
+					links.push(link);
+				});
+			}
+			if (drive_links != null) {
+				drive_links.forEach(link => {
+					driveId = link.split('/')[5];
+					links.push('https://lh3.googleusercontent.com/d/' + driveId);
+				});
+			}
+			return links;
+		},
+
+		createMarker(cor, latitude, longitude, nome, descricao, links) {
 			const icon = new L.Icon({
-				iconUrl: `assets/img/marker-icon-2x-${this.categorias[point.categoria].color}.png`,
+				iconUrl: `assets/img/marker-icon-2x-${cor}.png`,
 				shadowUrl: 'assets/img/marker-shadow.png',
 				iconSize: [25, 41],
 				iconAnchor: [12, 41],
 				popupAnchor: [1, -34],
 				shadowSize: [41, 41]
 			});
-			const marker = L.marker([point.latitude, point.longitude], {
-				title: point.nome,
+			const marker = L.marker([latitude, longitude], {
+				title: nome,
 				icon: icon
 			});
 
-			let name = '';
-			if (point.nome != null) {
-				name = `<b>${point.nome}</b><br>`;
-			}
+			let name = `<b>${nome}</b><br>`;
+
 			let description = '';
-			if (description != null) {
-				description = `${point.descricao}<br>`;
+			if (descricao != null) {
+				description = `${descricao}<br>`;
 			}
 			let img = '';
-			if (point.links != null) {
-				img = `<img src="${point.links}" width="100%">`;
+			if (links != null) {
+				links.forEach(link => {
+					img += `<img src="${link}" width="100%">`;
+				});
 			}
 			marker.bindPopup(`${name}${description}${img}`).openPopup();
 
 			return marker;
 		},
 
-		displayMarkers(category) {
-			this.points.filter(point => point.categoria === category).forEach(point => {
-				point.marker.addTo(this.map);
+		displayPoiMarkers(category) {
+			this.pointsOfInterest.filter(poi => poi.categoria === category).forEach(poi => {
+				poi.marker.addTo(this.map);
 			});
 		},
 
-		displayHikingTrailMarkers() {
-			this.hideMarkers();
-
-			this.points.filter(point => this.hikingTrailPoints.includes(point.id)).forEach(point => {
-				if (point.marker !== null) {
-					point.marker.addTo(this.map);
-				}
+		displayCollectionMarkers() {
+			this.collection.forEach(colItem => {
+				colItem.marker.addTo(this.map);
 			});
-
-			var trackCoordinates = this.hikingTrailPoints
-				.map(pointId => this.points.find(point => point.id === pointId))
-				.filter(point => point !== undefined)
-				.map(point => [point.latitude, point.longitude]);
-
-			var polyline = L.polyline(trackCoordinates, { color: 'red' }).addTo(this.map);
-			this.map.fitBounds(polyline.getBounds());
 		},
+		/*
+				displayHikingTrailMarkers() {
+					this.hideMarkers();
+		
+					this.points.filter(point => this.hikingTrailPoints.includes(point.id)).forEach(point => {
+						if (point.marker !== null) {
+							point.marker.addTo(this.map);
+						}
+					});
+		
+					var trackCoordinates = this.hikingTrailPoints
+						.map(pointId => this.points.find(point => point.id === pointId))
+						.filter(point => point !== undefined)
+						.map(point => [point.latitude, point.longitude]);
+		
+					var polyline = L.polyline(trackCoordinates, { color: 'red' }).addTo(this.map);
+					this.map.fitBounds(polyline.getBounds());
+				},
+		*/
 
 		filterMarkers(category) {
 			this.activeFilter = category;
 			this.hideMarkers();
 			if (category != null) {
-				this.displayMarkers(category);
+				if (category === 'Acervo') {
+					this.displayCollectionMarkers();
+				} else {
+					this.displayPoiMarkers(category);
+				}
 			} else {
-				this.displayMarkers('Atrativos');
-				this.displayMarkers('Coleções');
-				this.displayMarkers('Edificações');
+				this.displayPoiMarkers('Atrativo');
+				this.displayPoiMarkers('Utilidade');
+				this.displayCollectionMarkers();
 			}
 		},
 
 		hideMarkers() {
-			this.points.forEach(point => {
-				if (point.marker !== null) {
-					point.marker.remove();
+			this.pointsOfInterest.forEach(poi => {
+				if (poi.marker !== null) {
+					poi.marker.remove();
+				}
+			});
+			this.collection.forEach(colItem => {
+				if (colItem.marker !== null) {
+					colItem.marker.remove();
 				}
 			});
 		},
