@@ -1,6 +1,7 @@
 <template>
 	<div id="map"></div>
 
+	<!--TODO: Selection effect not working-->
 	<q-page-sticky position="top-right" :offset="[20, 20]">
 		<q-btn :class="activeFilter == categorias.Acervo ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
 			@click="filterMarkers('Acervo')">
@@ -19,8 +20,8 @@
 			<q-tooltip>Atrativos</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 230]"
-		v-if="this.hikingTrailPoints.length === 0 && activeFilter != null">
+	<!--Unselect filter-->
+	<q-page-sticky position="top-right" :offset="[20, 230]" v-if="activeFilter != null">
 		<q-btn fab icon="ion-close" color="grey" @click="filterMarkers(null)">
 			<q-tooltip>Limpar filtros</q-tooltip>
 		</q-btn>
@@ -38,9 +39,15 @@ import 'leaflet.locatecontrol';
 import 'leaflet.locatecontrol/dist/L.Control.Locate.css';
 
 import { defineComponent } from 'vue';
-import { api } from 'boot/axios'
+import { api } from 'boot/axios';
+import { useArraysStore } from 'stores/arrays';
+import { useGoogleApiStore } from 'stores/googleApi';
+
+const arrays = useArraysStore();
+const googleApi = useGoogleApiStore();
 
 export default defineComponent({
+
 	mounted() {
 		const hikingTrailPointsParam = this.$route.params.hikingTrailPoints;
 		if (hikingTrailPointsParam) {
@@ -54,16 +61,11 @@ export default defineComponent({
 		return {
 			activeFilter: null,
 			map: null,
-			hikingTrailPoints: [], //TODO: rethink this
 			categorias: {
 				Utilidade: { color: 'red' },
 				Atrativo: { color: 'orange' },
 				Acervo: { color: 'green' },
 			},
-			pointsOfInterest: [], //TODO: move to store
-			collection: [], //TODO: move to store
-			spreadsheetId: '15pkvRPsPOIQJEe2hKn9XCHuKHQ5buoL2QiQnRJHu4yI',
-			apiKey: 'AIzaSyA_LT1DlQ_iArm1fGqxIK-YpjAOUSoZgZo' //TODO: Replace key for project API key
 		};
 	},
 
@@ -122,7 +124,7 @@ export default defineComponent({
 
 		async readSheet(sheetName) {
 			try {
-				const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}?key=${this.apiKey}`;
+				const url = `https://sheets.googleapis.com/v4/spreadsheets/${googleApi.spreadsheetId}/values/${sheetName}?key=${googleApi.apiKey}`;
 				const response = await api.get(url);
 
 				if (response.data && response.data.values) {
@@ -157,7 +159,7 @@ export default defineComponent({
 					this.handleLinks(poi.generic_links, poi.drive_links)
 				);
 
-				this.pointsOfInterest.push(poi);
+				arrays.addToPointsOfInterest(poi);
 			});
 		},
 
@@ -174,15 +176,15 @@ export default defineComponent({
 					return;
 
 				colItem.id = parseInt(colItem.id);
-				colItem.marker = this.createMarker(green,
+				colItem.marker = this.createMarker(this.categorias['Acervo'].color,
 					colItem.latitude,
 					colItem.longitude,
-					colItem.nome + '(' + colItem.nome_cientifico + ')',
+					colItem.nome + (colItem.nome_cientifico != null && colItem.nome_cientifico != '' ? ' (' + colItem.nome_cientifico + ')' : ''),
 					'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem,
 					this.handleLinks(colItem.generic_links, colItem.drive_links)
 				);
 
-				this.collection.push(colItem);
+				arrays.addToCollection(colItem);
 			});
 		},
 
@@ -192,13 +194,13 @@ export default defineComponent({
 
 			let links = [];
 			if (generic_links != null) {
-				generic_links.forEach(link => {
+				generic_links.split(';').forEach(link => {
 					links.push(link);
 				});
 			}
 			if (drive_links != null) {
-				drive_links.forEach(link => {
-					driveId = link.split('/')[5];
+				drive_links.split(';').forEach(link => {
+					let driveId = link.split('/')[5];
 					links.push('https://lh3.googleusercontent.com/d/' + driveId);
 				});
 			}
@@ -237,13 +239,13 @@ export default defineComponent({
 		},
 
 		displayPoiMarkers(category) {
-			this.pointsOfInterest.filter(poi => poi.categoria === category).forEach(poi => {
+			arrays.pointsOfInterest.filter(poi => poi.categoria === category).forEach(poi => {
 				poi.marker.addTo(this.map);
 			});
 		},
 
 		displayCollectionMarkers() {
-			this.collection.forEach(colItem => {
+			arrays.collection.forEach(colItem => {
 				colItem.marker.addTo(this.map);
 			});
 		},
@@ -284,12 +286,12 @@ export default defineComponent({
 		},
 
 		hideMarkers() {
-			this.pointsOfInterest.forEach(poi => {
+			arrays.pointsOfInterest.forEach(poi => {
 				if (poi.marker !== null) {
 					poi.marker.remove();
 				}
 			});
-			this.collection.forEach(colItem => {
+			arrays.collection.forEach(colItem => {
 				if (colItem.marker !== null) {
 					colItem.marker.remove();
 				}
