@@ -43,9 +43,6 @@ import { api } from 'boot/axios';
 import { useArraysStore } from 'stores/arrays';
 import { useGoogleApiStore } from 'stores/googleApi';
 
-const arrays = useArraysStore();
-const googleApi = useGoogleApiStore();
-
 export default defineComponent({
 
 	mounted() {
@@ -66,6 +63,8 @@ export default defineComponent({
 				Atrativo: { color: 'orange' },
 				Acervo: { color: 'green' },
 			},
+			arrays: useArraysStore(),
+			googleApi: useGoogleApiStore(),
 		};
 	},
 
@@ -124,7 +123,7 @@ export default defineComponent({
 
 		async readSheet(sheetName) {
 			try {
-				const url = `https://sheets.googleapis.com/v4/spreadsheets/${googleApi.spreadsheetId}/values/${sheetName}?key=${googleApi.apiKey}`;
+				const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.googleApi.spreadsheetId}/values/${sheetName}?key=${this.googleApi.apiKey}`;
 				const response = await api.get(url);
 
 				if (response.data && response.data.values) {
@@ -159,7 +158,7 @@ export default defineComponent({
 					this.handleLinks(poi.generic_links, poi.drive_links)
 				);
 
-				arrays.addToPointsOfInterest(poi);
+				this.arrays.addToPointsOfInterest(poi);
 			});
 		},
 
@@ -184,7 +183,7 @@ export default defineComponent({
 					this.handleLinks(colItem.generic_links, colItem.drive_links)
 				);
 
-				arrays.addToCollection(colItem);
+				this.arrays.addToCollection(colItem);
 			});
 		},
 
@@ -239,13 +238,13 @@ export default defineComponent({
 		},
 
 		displayPoiMarkers(category) {
-			arrays.pointsOfInterest.filter(poi => poi.categoria === category).forEach(poi => {
+			this.arrays.pointsOfInterest.filter(poi => poi.categoria === category).forEach(poi => {
 				poi.marker.addTo(this.map);
 			});
 		},
 
 		displayCollectionMarkers() {
-			arrays.collection.forEach(colItem => {
+			this.arrays.collection.forEach(colItem => {
 				colItem.marker.addTo(this.map);
 			});
 		},
@@ -286,12 +285,12 @@ export default defineComponent({
 		},
 
 		hideMarkers() {
-			arrays.pointsOfInterest.forEach(poi => {
+			this.arrays.pointsOfInterest.forEach(poi => {
 				if (poi.marker !== null) {
 					poi.marker.remove();
 				}
 			});
-			arrays.collection.forEach(colItem => {
+			this.arrays.collection.forEach(colItem => {
 				if (colItem.marker !== null) {
 					colItem.marker.remove();
 				}
