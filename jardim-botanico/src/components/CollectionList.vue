@@ -21,6 +21,9 @@ export default defineComponent({
             arrays: useArraysStore(),
         }
     },
+    beforeMount() {
+        this.arrays.loadCollection();
+    },
 })
 </script>
   
