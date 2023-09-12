@@ -1,21 +1,20 @@
 <template>
 	<div id="map"></div>
 
-	<!--TODO: Selection effect not working-->
 	<q-page-sticky position="top-right" :offset="[20, 20]">
-		<q-btn :class="activeFilter == categorias.Acervo ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
+		<q-btn :class="activeFilter == categories.Acervo.name ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
 			@click="filterMarkers('Acervo')">
 			<q-tooltip>Acervo</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
 	<q-page-sticky position="top-right" :offset="[20, 90]">
-		<q-btn :class="activeFilter == categorias.Utilidade ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
+		<q-btn :class="activeFilter == categories.Utilidade.name ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
 			@click="filterMarkers('Utilidade')">
 			<q-tooltip>Utilidades</q-tooltip>
 		</q-btn>
 	</q-page-sticky>
 	<q-page-sticky position="top-right" :offset="[20, 160]">
-		<q-btn :class="activeFilter == categorias.Atrativo ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
+		<q-btn :class="activeFilter == categories.Atrativo.name ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
 			@click="filterMarkers('Atrativo')">
 			<q-tooltip>Atrativos</q-tooltip>
 		</q-btn>
@@ -47,10 +46,10 @@ export default defineComponent({
 		return {
 			activeFilter: null,
 			map: null,
-			categorias: {
-				Utilidade: { color: 'red' },
-				Atrativo: { color: 'orange' },
-				Acervo: { color: 'green' },
+			categories: {
+				Utilidade: { name: 'Utilidade', color: 'red' },
+				Atrativo: { name: 'Atrativo', color: 'orange' },
+				Acervo: { name: 'Acervo', color: 'green' },
 			},
 			arrays: useArraysStore(),
 		};
@@ -77,7 +76,7 @@ export default defineComponent({
 			}
 
 			this.arrays.pointsOfInterest.forEach(poi => {
-				poi.marker = this.createMarker(this.categorias[poi.categoria].color,
+				poi.marker = this.createMarker(this.categories[poi.categoria].color,
 					poi.latitude,
 					poi.longitude,
 					poi.nome,
@@ -86,7 +85,7 @@ export default defineComponent({
 				);
 			});
 			this.arrays.collection.forEach(colItem => {
-				colItem.marker = this.createMarker(this.categorias['Acervo'].color,
+				colItem.marker = this.createMarker(this.categories['Acervo'].color,
 					colItem.latitude,
 					colItem.longitude,
 					colItem.nome + (colItem.nome_cientifico != null && colItem.nome_cientifico != '' ? ' (' + colItem.nome_cientifico + ')' : ''),
