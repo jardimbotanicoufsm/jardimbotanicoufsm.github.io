@@ -2,7 +2,7 @@
     <q-item>
         <q-item-section>
             <q-item-label>{{ nome }}</q-item-label>
-            <q-item-label caption>Outros nomes: {{ outrosnomes }}</q-item-label>
+            <q-item-label caption>Outros nomes: {{ outros_nomes }}</q-item-label>
             <q-item-label caption>Classificação: {{ classificacao }}</q-item-label>
             <q-item-label caption>Origem: {{ origem }}</q-item-label>
         </q-item-section>
@@ -27,15 +27,15 @@ export default defineComponent({
 
         classificacao: {
             type: String,
-            required: true
+            required: false
         },
 
         origem: {
             type: String,
-            required: true
+            required: false
         },
 
-        outrosnomes: {
+        outros_nomes: {
             type: String,
             required: false
         },

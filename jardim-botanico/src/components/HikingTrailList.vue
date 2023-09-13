@@ -15,13 +15,13 @@ export default defineComponent({
     components: {
         HikingTrailListItem
     },
-    beforeMount() {
-        this.readSpreadsheet();
-    },
     data() {
         return {
             hikingTrailList: []
         }
+    },
+    beforeMount() {
+        this.readSpreadsheet();
     },
     methods: {
         readSpreadsheet() {

@@ -84,11 +84,11 @@ export default defineComponent({
 					poi.links
 				);
 			});
-			this.arrays.collection.forEach(colItem => {
+			this.arrays.collection.filter(colItem => colItem.latitude != null && colItem.longitude != null).forEach(colItem => {
 				colItem.marker = this.createMarker(this.categories['Acervo'].color,
 					colItem.latitude,
 					colItem.longitude,
-					colItem.nome + (colItem.nome_cientifico != null && colItem.nome_cientifico != '' ? ' (' + colItem.nome_cientifico + ')' : ''),
+					colItem.nome,
 					'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem,
 					colItem.links
 				);

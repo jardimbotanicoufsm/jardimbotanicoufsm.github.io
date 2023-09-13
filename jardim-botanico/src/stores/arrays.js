@@ -80,7 +80,7 @@ export const useArraysStore = defineStore('arrays', {
         row.forEach((value, index) => {
           colItem[header[index]] = value;
         });
-        if (colItem.id == null || colItem.nome == null || colItem.latitude == null || colItem.longitude == null)
+        if (colItem.id == null || colItem.nome == null)
           return;
 
         colItem.id = parseInt(colItem.id);
