@@ -126,47 +126,40 @@ export default defineComponent({
 			this.map = map;
 		},
 
-		createMarker(cor, latitude, longitude, nome, descricao, links) {
-			const icon = new L.Icon({
-				iconUrl: `assets/img/marker-icon-2x-${cor}.png`,
-				shadowUrl: 'assets/img/marker-shadow.png',
-				iconSize: [25, 41],
-				iconAnchor: [12, 41],
-				popupAnchor: [1, -34],
-				shadowSize: [41, 41]
-			});
-			const marker = L.marker([latitude, longitude], {
-				title: nome,
-				icon: icon
-			});
+		createMarker(color, latitude, longitude, name, description, links) {
+			const icon = new L.Icon({ iconUrl: `assets/img/marker-icon-2x-${color}.png`, shadowUrl: 'assets/img/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
+			const marker = L.marker([latitude, longitude], { title: name, icon: icon });
 
-			let name = `<b>${nome}</b><br>`;
-
-			let description = '';
-			if (descricao != null) {
-				description = `${descricao}<br>`;
+			let htmlName = '';
+			if (name != null) {
+				htmlName = `<b>${name}</b><br>`;
 			}
-			let img = '';
+			let htmlDescription = '';
+			if (description != null) {
+				htmlDescription = `${description}<br>`;
+			}
+			let htmlImg = '';
 			if (links != null) {
 				links.forEach(link => {
-					img += `<img src="${link}" width="100%">`;
+					htmlImg += `<img src="${link}" width="100%">`;
 				});
 			}
-			marker.bindPopup(`${name}${description}${img}`).openPopup();
+
+			marker.bindPopup(`${htmlName}${htmlDescription}${htmlImg}`).openPopup();
 
 			return marker;
 		},
 
 		displayPoiMarkers(category) {
-			this.arrays.pointsOfInterest.filter(poi => poi.categoria === category).forEach(poi => {
-				poi.marker.addTo(this.map);
-			});
+			this.arrays.pointsOfInterest
+				.filter(poi => poi.marker != null && poi.categoria == category)
+				.forEach(poi => poi.marker.addTo(this.map));
 		},
 
 		displayCollectionMarkers() {
-			this.arrays.collection.forEach(colItem => {
-				colItem.marker.addTo(this.map);
-			});
+			this.arrays.collection
+				.filter(colItem => colItem.marker != null)
+				.forEach(colItem => colItem.marker.addTo(this.map));
 		},
 		/*
 				displayHikingTrailMarkers() {
@@ -205,16 +198,12 @@ export default defineComponent({
 		},
 
 		hideMarkers() {
-			this.arrays.pointsOfInterest.forEach(poi => {
-				if (poi.marker !== null) {
-					poi.marker.remove();
-				}
-			});
-			this.arrays.collection.forEach(colItem => {
-				if (colItem.marker !== null) {
-					colItem.marker.remove();
-				}
-			});
+			this.arrays.pointsOfInterest
+				.filter(colItem => colItem.marker != null)
+				.forEach(poi => poi.marker.remove());
+			this.arrays.collection
+				.filter(colItem => colItem.marker != null)
+				.forEach(colItem => colItem.marker.remove());
 		},
 	},
 });

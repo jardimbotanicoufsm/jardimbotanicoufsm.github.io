@@ -97,7 +97,7 @@ export const useArraysStore = defineStore('arrays', {
       let links = [];
       if (generic_links != null) {
         generic_links.split(';').forEach(link => {
-          links.push(link);
+          links.push(link.trim());
         });
       }
       if (drive_links != null) {
