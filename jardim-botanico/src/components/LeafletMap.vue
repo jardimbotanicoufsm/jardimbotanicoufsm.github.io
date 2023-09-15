@@ -26,8 +26,11 @@
 		</q-btn>
 	</q-page-sticky>
 
-	<q-page-sticky position="bottom-left" :offset="[20, 20]">
+	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-if="hikingTrailId == null">
 		<q-btn fab icon="ion-walk" color="grey" @click="this.$router.push('/hikingTrails');" />
+	</q-page-sticky>
+	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-if="hikingTrailId != null">
+		<q-btn fab icon="ion-arrow-round-back" color="grey" @click="this.$router.push('/');" />
 	</q-page-sticky>
 </template>
 
@@ -41,7 +44,7 @@ import { defineComponent } from 'vue';
 import { useArraysStore } from 'stores/arrays';
 
 export default defineComponent({
-
+	name: 'LeafletMap',
 	data() {
 		return {
 			activeFilter: null,
@@ -52,17 +55,15 @@ export default defineComponent({
 				Acervo: { name: 'Acervo', color: 'green' },
 			},
 			arrays: useArraysStore(),
+			hikingTrailId: this.$route.params.hikingTrailId
 		};
 	},
 
 	mounted() {
-		const hikingTrailPointsParam = this.$route.params.hikingTrailPoints;
-		if (hikingTrailPointsParam) {
-			this.hikingTrailPoints = JSON.parse(hikingTrailPointsParam);
-		}
 		this.createMap();
 
 		this.initiateMarkers();
+		this.initiateHikingTrail();
 	},
 
 	methods: {
@@ -71,30 +72,18 @@ export default defineComponent({
 			try {
 				await this.arrays.loadPointsOfInterest();
 				await this.arrays.loadCollection();
+
+				this.arrays.pointsOfInterest.forEach(poi => {
+					poi.marker = this.createMarker(this.categories[poi.categoria].color, poi.latitude, poi.longitude, poi.nome, poi.descricao, poi.links);
+				});
+				this.arrays.collection.filter(colItem => colItem.latitude != null && colItem.longitude != null).forEach(colItem => {
+					colItem.marker = this.createMarker(this.categories['Acervo'].color, colItem.latitude, colItem.longitude, colItem.nome, 'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem, colItem.links);
+				});
+
+				this.filterMarkers(null);
 			} catch (error) {
 				this.handleReadError(error, 3);
 			}
-
-			this.arrays.pointsOfInterest.forEach(poi => {
-				poi.marker = this.createMarker(this.categories[poi.categoria].color,
-					poi.latitude,
-					poi.longitude,
-					poi.nome,
-					poi.descricao,
-					poi.links
-				);
-			});
-			this.arrays.collection.filter(colItem => colItem.latitude != null && colItem.longitude != null).forEach(colItem => {
-				colItem.marker = this.createMarker(this.categories['Acervo'].color,
-					colItem.latitude,
-					colItem.longitude,
-					colItem.nome,
-					'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem,
-					colItem.links
-				);
-			});
-
-			this.filterMarkers(null);
 		},
 
 		handleReadError(error, code) {
@@ -161,25 +150,25 @@ export default defineComponent({
 				.filter(colItem => colItem.marker != null)
 				.forEach(colItem => colItem.marker.addTo(this.map));
 		},
-		/*
-				displayHikingTrailMarkers() {
-					this.hideMarkers();
-		
-					this.points.filter(point => this.hikingTrailPoints.includes(point.id)).forEach(point => {
-						if (point.marker !== null) {
-							point.marker.addTo(this.map);
-						}
-					});
-		
-					var trackCoordinates = this.hikingTrailPoints
-						.map(pointId => this.points.find(point => point.id === pointId))
-						.filter(point => point !== undefined)
-						.map(point => [point.latitude, point.longitude]);
-		
-					var polyline = L.polyline(trackCoordinates, { color: 'red' }).addTo(this.map);
+
+		async initiateHikingTrail() {
+			if (this.hikingTrailId == null)
+				return;
+			try {
+				await this.arrays.loadHikingTrails();
+				await this.arrays.loadHikingTrailPoints(this.hikingTrailId);
+
+				var hikingTrail = this.arrays.hikingTrails.find(hikingTrail => hikingTrail.id === this.hikingTrailId);
+
+				if (hikingTrail != null && hikingTrail.points != null && hikingTrail.points.length > 0) {
+					var polyline = L.polyline(hikingTrail.points.map(point => [point.latitude, point.longitude]), { color: 'red' }).addTo(this.map);
+
 					this.map.fitBounds(polyline.getBounds());
-				},
-		*/
+				}
+			} catch (error) {
+				this.handleReadError(error, 4);
+			}
+		},
 
 		filterMarkers(category) {
 			this.activeFilter = category;
