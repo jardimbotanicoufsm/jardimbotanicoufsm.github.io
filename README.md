@@ -70,5 +70,7 @@ Não houve nenhuma parte que se destaque consideravelmente em questão de nível
 
 Há detalhes de usabilidade que, com certeza, poderiam ser melhorados numa próxima versão. Não me aventurei com o service worker também, o que torna a aplicação um pwa extremamente simples. Ainda assim, acho que o resultado foi consistente e fiquei feliz com a minha produção :)
 
+Teste
+
 ---
 Projeto entregue para a disciplina de [Desenvolvimento de Software para a Web](http://github.com/andreainfufsm/elc1090-2023a) em 2023a
