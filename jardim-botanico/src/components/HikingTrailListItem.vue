@@ -5,6 +5,9 @@
             <q-item-label caption v-if="tempo != null">Tempo: {{ tempo }}</q-item-label>
             <q-item-label caption v-if="descricao != null">Descrição: {{ descricao }}</q-item-label>
         </q-item-section>
+        <q-item-section side>
+            <q-icon name="ion-eye" color="orange" />
+        </q-item-section>
     </q-item>
     <q-separator spaced />
 </template>

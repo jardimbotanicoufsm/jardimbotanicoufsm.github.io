@@ -1,5 +1,5 @@
 <template>
-    <q-list bordered separator>
+    <q-list padding>
         <CollectionListItem v-for="collectionListItem in arrays.collection" v-bind="collectionListItem"
             v-bind:key="collectionListItem.nome" />
     </q-list>

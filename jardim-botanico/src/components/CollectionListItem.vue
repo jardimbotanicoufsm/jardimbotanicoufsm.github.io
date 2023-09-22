@@ -1,5 +1,16 @@
 <template>
-    <q-item>
+    <q-item v-if="latitude != null && longitude != null" clickable v-ripple>
+        <q-item-section>
+            <q-item-label>{{ nome }}</q-item-label>
+            <q-item-label caption>Outros nomes: {{ outros_nomes }}</q-item-label>
+            <q-item-label caption>Classificação: {{ classificacao }}</q-item-label>
+            <q-item-label caption>Origem: {{ origem }}</q-item-label>
+        </q-item-section>
+        <q-item-section side>
+            <q-icon name="ion-locate" color="green" />
+        </q-item-section>
+    </q-item>
+    <q-item v-else>
         <q-item-section>
             <q-item-label>{{ nome }}</q-item-label>
             <q-item-label caption>Outros nomes: {{ outros_nomes }}</q-item-label>
@@ -7,6 +18,7 @@
             <q-item-label caption>Origem: {{ origem }}</q-item-label>
         </q-item-section>
     </q-item>
+    <q-separator spaced />
 </template>
   
 <script>
@@ -30,12 +42,22 @@ export default defineComponent({
             required: false
         },
 
+        outros_nomes: {
+            type: String,
+            required: false
+        },
+
         origem: {
             type: String,
             required: false
         },
 
-        outros_nomes: {
+        latitude: {
+            type: String,
+            required: false
+        },
+
+        longitude: {
             type: String,
             required: false
         },
