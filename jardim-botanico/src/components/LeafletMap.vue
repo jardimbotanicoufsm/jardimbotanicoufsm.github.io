@@ -71,15 +71,19 @@ export default defineComponent({
 
 		async initiateMarkers() {
 			try {
-				await this.arrays.loadPointsOfInterest();
-				await this.arrays.loadCollection();
 
-				this.arrays.pointsOfInterest.forEach(poi => {
-					poi.marker = this.createMarker(this.categories[poi.categoria].color, poi.latitude, poi.longitude, poi.nome, poi.descricao, poi.links);
-				});
+				await this.arrays.loadCollection();
 				this.arrays.collection.filter(colItem => colItem.latitude != null && colItem.longitude != null).forEach(colItem => {
 					colItem.marker = this.createMarker(this.categories['Acervo'].color, colItem.latitude, colItem.longitude, colItem.nome, 'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem, colItem.links);
 				});
+
+				// If we are not in a collection item page, load the points of interest
+				if (this.collectionItemId == null) {
+					await this.arrays.loadPointsOfInterest();
+					this.arrays.pointsOfInterest.forEach(poi => {
+						poi.marker = this.createMarker(this.categories[poi.categoria].color, poi.latitude, poi.longitude, poi.nome, poi.descricao, poi.links);
+					});
+				}
 
 				this.filterMarkers(null);
 			} catch (error) {
@@ -99,7 +103,7 @@ export default defineComponent({
 		createMap() {
 			var map = L.map("map", {
 				center: [-29.7194, -53.7295],
-				zoom: 17
+				zoom: 17,
 			});
 
 			L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -141,15 +145,29 @@ export default defineComponent({
 		},
 
 		displayPoiMarkers(category) {
+			// If we are in a collection item page, do not display the points of interest
+			if (this.collectionItemId != null)
+				return;
+
 			this.arrays.pointsOfInterest
 				.filter(poi => poi.marker != null && poi.categoria == category)
 				.forEach(poi => poi.marker.addTo(this.map));
 		},
 
 		displayCollectionMarkers() {
-			this.arrays.collection
+			let collection = this.arrays.collection;
+
+			// If we are in a collection item page, filter the collection to show only the item
+			if (this.collectionItemId != null)
+				collection = collection.filter(colItem => colItem.id === this.collectionItemId);
+
+			collection
 				.filter(colItem => colItem.marker != null)
 				.forEach(colItem => colItem.marker.addTo(this.map));
+
+			// If we are in a collection item page, center the map on the item
+			if (this.collectionItemId != null)
+				this.map.setView([collection[0].latitude, collection[0].longitude], 19);
 		},
 
 		async initiateHikingTrail() {
