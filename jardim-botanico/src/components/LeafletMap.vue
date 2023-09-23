@@ -26,11 +26,11 @@
 		</q-btn>
 	</q-page-sticky>
 
-	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-if="hikingTrailId == null">
+	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-if="hikingTrailId == null && collectionItemId == null">
 		<q-btn fab icon="ion-walk" color="grey" @click="this.$router.push('/hikingTrails');" />
 	</q-page-sticky>
-	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-if="hikingTrailId != null">
-		<q-btn fab icon="ion-arrow-round-back" color="grey" @click="this.$router.push('/');" />
+	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-else>
+		<q-btn fab icon="ion-arrow-round-back" color="grey" @click="this.$router.push({ name: 'Home' });" />
 	</q-page-sticky>
 </template>
 
@@ -55,7 +55,8 @@ export default defineComponent({
 				Acervo: { name: 'Acervo', color: 'green' },
 			},
 			arrays: useArraysStore(),
-			hikingTrailId: this.$route.params.hikingTrailId
+			hikingTrailId: this.$route.params.hikingTrailId,
+			collectionItemId: this.$route.params.collectionItemId,
 		};
 	},
 

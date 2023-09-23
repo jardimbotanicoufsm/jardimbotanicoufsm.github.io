@@ -1,7 +1,7 @@
 <template>
     <q-list padding>
         <CollectionListItem v-for="collectionListItem in arrays.collection" v-bind="collectionListItem"
-            v-bind:key="collectionListItem.nome" />
+            v-bind:key="collectionListItem.nome" @collection-list-item-click="handleCollectionItemClick" />
     </q-list>
 </template>
   
@@ -24,6 +24,12 @@ export default defineComponent({
     beforeMount() {
         this.arrays.loadCollection();
     },
+    methods: {
+        handleCollectionItemClick(collectionItemId) {
+            this.$router.push({ name: 'CollectionItem', params: { hikingTrailId: null, collectionItemId: collectionItemId } });
+        }
+
+    }
 })
 </script>
   

@@ -26,7 +26,7 @@ export default defineComponent({
     },
     methods: {
         handleHikingTrailClick(hikingTrailId) {
-            this.$router.push(`/hikingTrail/${hikingTrailId}`);
+            this.$router.push({ name: 'HikingTrail', params: { hikingTrailId: hikingTrailId, collectionItemId: null } });
         }
 
     }

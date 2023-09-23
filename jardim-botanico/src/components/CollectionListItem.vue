@@ -1,5 +1,6 @@
 <template>
-    <q-item v-if="latitude != null && longitude != null" clickable v-ripple>
+    <q-item v-if="latitude != null && longitude != null" @click="$emit('collection-list-item-click', id)" clickable
+        v-ripple>
         <q-item-section>
             <q-item-label>{{ nome }}</q-item-label>
             <q-item-label caption>Outros nomes: {{ outros_nomes }}</q-item-label>
