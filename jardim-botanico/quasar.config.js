@@ -26,8 +26,8 @@ module.exports = configure(function (ctx) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
-      
-      
+
+
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -43,7 +43,7 @@ module.exports = configure(function (ctx) {
       // 'themify',
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-      
+
       'ionicons-v4',
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
@@ -72,10 +72,10 @@ module.exports = configure(function (ctx) {
 
       // https://v2.quasar.dev/quasar-cli-webpack/handling-webpack
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
-      
-      chainWebpack (chain) {
+
+      chainWebpack(chain) {
         chain.plugin('eslint-webpack-plugin')
-          .use(ESLintPlugin, [{ extensions: [ 'js', 'vue' ] }])
+          .use(ESLintPlugin, [{ extensions: ['js', 'vue'] }])
       },
       env: require('dotenv').config().parsed
     },
@@ -93,7 +93,7 @@ module.exports = configure(function (ctx) {
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework
     framework: {
       config: {
-        dark: 'auto'
+        dark: 'false'
       },
 
       // iconSet: 'material-icons', // Quasar icon set
@@ -124,17 +124,17 @@ module.exports = configure(function (ctx) {
       // manualPostHydrationTrigger: true,
 
       prodPort: 3000, // The default port that the production server should use
-                      // (gets superseded if process.env.PORT is specified at runtime)
+      // (gets superseded if process.env.PORT is specified at runtime)
 
       maxAge: 1000 * 60 * 60 * 24 * 30,
-        // Tell browser when a file from the server should expire from cache (in ms)
+      // Tell browser when a file from the server should expire from cache (in ms)
 
-      
-      chainWebpackWebserver (chain) {
+
+      chainWebpackWebserver(chain) {
         chain.plugin('eslint-webpack-plugin')
-          .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
+          .use(ESLintPlugin, [{ extensions: ['js'] }])
       },
-      
+
 
       middlewares: [
         ctx.prod ? 'compression' : '',
@@ -149,25 +149,24 @@ module.exports = configure(function (ctx) {
         skipWaiting: true,
         clientsClaim: true
       },
-    
+
       // for the custom service worker ONLY (/src-pwa/custom-service-worker.[js|ts])
       // if using workbox in InjectManifest mode
-      
-      chainWebpackCustomSW (chain) {
+
+      chainWebpackCustomSW(chain) {
         chain.plugin('eslint-webpack-plugin')
-          .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
+          .use(ESLintPlugin, [{ extensions: ['js'] }])
       },
-      
+
 
       manifest: {
-        name: `Jardim Botanico`,
-        short_name: `Jardim Botanico`,
+        name: `Jardim Botanico UFSM`,
+        short_name: `JBSM`,
         description: `Jardim Botanico UFSM`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        //TODO:
-        theme_color: '#027be3',
+        theme_color: '#478848',
         icons: [
           {
             src: 'icons/icon-128x128.png',
@@ -232,19 +231,19 @@ module.exports = configure(function (ctx) {
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
-      
-      chainWebpackMain (chain) {
-        chain.plugin('eslint-webpack-plugin')
-          .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
-      },
-      
 
-      
-      chainWebpackPreload (chain) {
+      chainWebpackMain(chain) {
         chain.plugin('eslint-webpack-plugin')
-          .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
+          .use(ESLintPlugin, [{ extensions: ['js'] }])
       },
-      
+
+
+
+      chainWebpackPreload(chain) {
+        chain.plugin('eslint-webpack-plugin')
+          .use(ESLintPlugin, [{ extensions: ['js'] }])
+      },
+
     }
   }
 });
