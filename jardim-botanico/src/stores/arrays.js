@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/axios';
-import { useGoogleApiStore } from 'stores/googleApi';
 
 export const useArraysStore = defineStore('arrays', {
 	state: () => ({
@@ -10,7 +9,6 @@ export const useArraysStore = defineStore('arrays', {
 		collectionLoaded: false,
 		hikingTrails: [],
 		hikingTrailsLoaded: false,
-		googleApi: useGoogleApiStore(),
 	}),
 
 	getters: {
@@ -71,7 +69,7 @@ export const useArraysStore = defineStore('arrays', {
 		},
 
 		async readSheet(sheetName) {
-			const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.googleApi.spreadsheetId}/values/${sheetName}?key=${this.googleApi.apiKey}`;
+			const url = `https://sheets.googleapis.com/v4/spreadsheets/${process.env.VUE_APP_SPREADSHEET_ID}/values/${sheetName}?key=${process.env.VUE_APP_API_KEY}`;
 			const response = await api.get(url);
 
 			if (response.data && response.data.values) {

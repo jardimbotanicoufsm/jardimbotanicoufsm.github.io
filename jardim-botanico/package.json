@@ -17,6 +17,7 @@
     "axios": "^1.4.0",
     "core-js": "^3.6.5",
     "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
     "leaflet": "^1.9.4",
     "leaflet.locatecontrol": "^0.79.0",
     "pinia": "^2.1.6",
