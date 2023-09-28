@@ -1,6 +1,7 @@
 <template>
-    <q-input v-model="searchQuery" label="Pesquisar" type="search" debounce="500" dense rounded bottom-slots clearable>
-        <template v-slot:append>
+    <q-input v-model="searchQuery" label="Pesquisar" type="search" debounce="500" dense rounded bottom-slots clearable
+        clear-icon="close">
+        <template v-slot:prepend>
             <q-icon name="ion-search" />
         </template>
     </q-input>

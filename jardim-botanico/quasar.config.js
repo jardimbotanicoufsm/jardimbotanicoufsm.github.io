@@ -92,9 +92,9 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework
     framework: {
-      config: {
-        dark: 'false'
-      },
+      // config: {
+      //   dark: 'auto'
+      // },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
@@ -160,13 +160,14 @@ module.exports = configure(function (ctx) {
 
 
       manifest: {
-        name: `Jardim Botanico UFSM`,
-        short_name: `JBSM`,
+        name: `Jardim Botanico`,
+        short_name: `Jardim Botanico`,
         description: `Jardim Botanico UFSM`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#478848',
+        //TODO:
+        theme_color: '#027be3',
         icons: [
           {
             src: 'icons/icon-128x128.png',
