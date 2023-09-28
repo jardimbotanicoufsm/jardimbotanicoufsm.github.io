@@ -14,43 +14,6 @@ const menuLinks = [
         icon: 'ion-leaf',
         link: '/about'
     },
-    {
-        title: 'Acervo',
-        icon: 'ion-filing',
-        link: '/collection',
-    },
-    /*
-    {
-        title: 'Visitas',
-        icon: 'ion-clipboard',
-        link: '/visits',
-        textColor: 'text-grey-6'
-    },
-    {
-        title: 'Atividades',
-        icon: 'ion-bulb',
-        link: '/activities',
-        textColor: 'text-grey-6'
-    },
-    {
-        title: 'Coleções',
-        icon: 'ion-filing',
-        link: '/colections',
-        textColor: 'text-grey-6'
-    },
-    {
-        title: 'Social',
-        icon: 'ion-people',
-        link: '/social',
-        textColor: 'text-grey-6'
-    },
-    {
-        title: 'Configurações',
-        icon: 'ion-settings',
-        link: '/settings',
-        textColor: 'text-grey-6'
-    },
-    */
 ]
 
 export default defineComponent({

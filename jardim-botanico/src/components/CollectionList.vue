@@ -1,6 +1,11 @@
 <template>
+    <q-input v-model="searchQuery" label="Pesquisar" type="search" debounce="500" dense rounded bottom-slots clearable>
+        <template v-slot:append>
+            <q-icon name="ion-search" />
+        </template>
+    </q-input>
     <q-list padding>
-        <CollectionListItem v-for="collectionListItem in arrays.collection" v-bind="collectionListItem"
+        <CollectionListItem v-for="collectionListItem in resultQuery" v-bind="collectionListItem"
             v-bind:key="collectionListItem.nome" @collection-list-item-click="handleCollectionItemClick" />
     </q-list>
 </template>
@@ -18,6 +23,7 @@ export default defineComponent({
     },
     data() {
         return {
+            searchQuery: null,
             arrays: useArraysStore(),
         }
     },
@@ -28,7 +34,20 @@ export default defineComponent({
         handleCollectionItemClick(collectionItemId) {
             this.$router.push({ name: 'CollectionItem', params: { hikingTrailId: null, collectionItemId: collectionItemId } });
         }
-
+    },
+    computed: {
+        resultQuery() {
+            if (this.searchQuery) {
+                return this.arrays.collection.filter(colItem => {
+                    return this.searchQuery
+                        .toLowerCase()
+                        .split(" ")
+                        .every(v => colItem.nome.toLowerCase().includes(v) || colItem.outros_nomes.toLowerCase().includes(v) || colItem.classificacao.toLowerCase().includes(v) || colItem.classificacao.toLowerCase().includes(v));
+                });
+            } else {
+                return this.arrays.collection;
+            }
+        }
     }
 })
 </script>

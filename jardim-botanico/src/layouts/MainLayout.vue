@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
 
-    <q-header elevated class="bg-primary">
+    <q-header elevated>
       <q-toolbar>
         <q-toolbar-title>
           Jardim Botânico UFSM
@@ -11,6 +11,7 @@
 
     <q-footer elevated>
       <q-tabs>
+        <q-route-tab name="acervo" icon="ion-filing" exact to="/collection" />
         <q-route-tab name="map" icon="ion-map" exact to="/" />
         <q-route-tab name="menu" icon="ion-menu" exact to="/menu" />
       </q-tabs>

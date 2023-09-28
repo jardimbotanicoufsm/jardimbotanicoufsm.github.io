@@ -96,7 +96,10 @@ export default defineComponent({
 				color: 'negative',
 				position: 'bottom',
 				message: `Impossível carregar dados (${code}): ${error.message}`,
-				icon: 'report_problem'
+				icon: 'report_problem',
+				actions: [
+					{ icon: 'close', color: 'white', round: true, handler: () => { /* ... */ } }
+				]
 			});
 		},
 
