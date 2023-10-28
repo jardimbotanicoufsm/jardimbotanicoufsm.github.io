@@ -12,8 +12,8 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer elevated>
-      <q-tabs>
+    <q-footer elevated style="padding-bottomom: 50px;">
+      <q-tabs switch-indicator>
         <q-route-tab name="acervo" icon="ion-filing" exact to="/collection" />
         <q-route-tab name="map" icon="ion-map" exact to="/" />
         <q-route-tab name="menu" icon="ion-menu" exact to="/menu" />
@@ -40,7 +40,7 @@ export default defineComponent({
 }
 
 .q-footer {
-  height: 50px
+  height: 60px
 }
 </style>
 
