@@ -1,1 +1,20 @@
 // app global css in SCSS form
+@font-face {
+    font-family: MyriadProRegular;
+    src: url(./fonts/MyriadProRegular.ttf);
+}
+
+// declare a class which applies it
+.myriad-pro-regular {
+    font-family: 'MyriadProRegular';
+}
+
+@font-face {
+    font-family: ZapfHumnstRegular;
+    src: url(./fonts/ZapfHumnstRegular.ttf);
+}
+
+// declare a class which applies it
+.zapf-humnst-regular {
+    font-family: 'ZapfHumnstRegular';
+}

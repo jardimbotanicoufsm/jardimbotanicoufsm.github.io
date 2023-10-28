@@ -3,8 +3,11 @@
 
     <q-header elevated>
       <q-toolbar>
+        <q-avatar>
+          <img src="assets/img/jbsm-negative-180x180.png">
+        </q-avatar>
         <q-toolbar-title>
-          Jardim Botânico UFSM
+          <text class="myriad-pro-regular">Jardim Botânico</text> <text class="zapf-humnst-regular">UFSM</text>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
