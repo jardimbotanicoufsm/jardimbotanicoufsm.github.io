@@ -12,7 +12,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer elevated style="padding-bottomom: 50px;">
+    <q-footer elevated>
       <q-tabs switch-indicator>
         <q-route-tab name="acervo" icon="ion-filing" exact to="/collection" />
         <q-route-tab name="map" icon="ion-map" exact to="/" />

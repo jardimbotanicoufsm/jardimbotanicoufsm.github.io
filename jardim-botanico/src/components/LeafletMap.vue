@@ -222,7 +222,7 @@ export default defineComponent({
 
 <style>
 #map {
-	height: calc(100vh - 100px);
+	height: calc(100vh - 110px);
 	width: 100%;
 	z-index: 0;
 }
