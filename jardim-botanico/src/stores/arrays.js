@@ -160,13 +160,19 @@ export const useArraysStore = defineStore('arrays', {
 			let links = [];
 			if (generic_links != null) {
 				generic_links.split(';').forEach(link => {
-					links.push(link.trim());
+					link = link.trim();
+					if (link == null || link == '')
+						return;
+					links.push(link);
 				});
 			}
 			if (drive_links != null) {
 				drive_links.split(';').forEach(link => {
-					let driveId = link.split('/')[5];
-					links.push('https://lh3.googleusercontent.com/d/' + driveId);
+					link = link.trim();
+					if (link == null || link == '')
+						return;
+					link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
+					links.push(link);
 				});
 			}
 			return links;
