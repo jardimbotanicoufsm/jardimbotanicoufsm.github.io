@@ -34,7 +34,7 @@ export default defineComponent({
 	name: 'MainLayout',
 	methods: {
 		refreshPage() {
-			location.reload();
+			location.reload(true);
 		},
 	},
 })
