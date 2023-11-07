@@ -159,21 +159,31 @@ export const useArraysStore = defineStore('arrays', {
 
 			let links = [];
 			if (generic_links != null) {
-				generic_links.split(';').forEach(link => {
-					link = link.trim();
-					if (link == null || link == '')
-						return;
+				let link = generic_links.split(';')[0];
+				link = link.trim();
+				if (link != null && link != '')
 					links.push(link);
-				});
+
+				// generic_links.split(';').forEach(link => {
+				// 	link = link.trim();
+				// 	if (link == null || link == '')
+				// 		return;
+				// 	links.push(link);
+				// });
 			}
 			if (drive_links != null) {
-				drive_links.split(';').forEach(link => {
-					link = link.trim();
-					if (link == null || link == '')
-						return;
-					link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
+				let link = drive_links.split(';')[0];
+				link = link.trim();
+				if (link != null || link != '')
 					links.push(link);
-				});
+
+				// drive_links.split(';').forEach(link => {
+				// 	link = link.trim();
+				// 	if (link == null || link == '')
+				// 		return;
+				// 	link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
+				// 	links.push(link);
+				// });
 			}
 			return links;
 		},
