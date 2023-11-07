@@ -15,5 +15,13 @@
 }
 
 .leaflet-popup {
-    width: 80vw;
+    width: auto;
+    height: auto;
+}
+
+.leaflet-popup-img {
+    width: auto;
+    height: auto;
+    max-width: 80vw;
+    max-height: 50vh;
 }

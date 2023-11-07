@@ -174,8 +174,10 @@ export const useArraysStore = defineStore('arrays', {
 			if (drive_links != null) {
 				let link = drive_links.split(';')[0];
 				link = link.trim();
-				if (link != null || link != '')
+				if (link != null || link != '') {
+					link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
 					links.push(link);
+				}
 
 				// drive_links.split(';').forEach(link => {
 				// 	link = link.trim();

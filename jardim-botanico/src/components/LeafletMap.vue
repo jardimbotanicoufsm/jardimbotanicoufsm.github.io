@@ -138,11 +138,11 @@ export default defineComponent({
 			let htmlImg = '';
 			if (links != null) {
 				links.forEach(link => {
-					htmlImg += `<img src="${link}" width="100%">`;
+					htmlImg += `<img src="${link}" class="leaflet-popup-img">`;
 				});
 			}
 
-			marker.bindPopup(`${htmlName}${htmlDescription}${htmlImg}`, { className: 'leaflet-popup' }).openPopup();
+			marker.bindPopup(`${htmlName}${htmlDescription}${htmlImg}`, { className: 'leaflet-popup', maxWidth: 'null', maxHeight: 'null' }).openPopup();
 
 			return marker;
 		},
