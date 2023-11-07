@@ -142,7 +142,7 @@ export default defineComponent({
 				});
 			}
 
-			marker.bindPopup(`${htmlName}${htmlDescription}${htmlImg}`).openPopup();
+			marker.bindPopup(`${htmlName}${htmlDescription}${htmlImg}`, { className: 'leaflet-popup' }).openPopup();
 
 			return marker;
 		},
