@@ -30,7 +30,6 @@ export const useArraysStore = defineStore('arrays', {
 		},
 
 		addToHikingTrails(item) {
-			get
 			this.hikingTrails.push(item);
 		},
 
