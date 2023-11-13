@@ -12,6 +12,12 @@ export const useArraysStore = defineStore('arrays', {
 	}),
 
 	getters: {
+		pointsOfInterestWithImages() {
+			return this.pointsOfInterest.filter(poi => poi.links != null && poi.links.length > 0);
+		},
+		collectionWithImages() {
+			return this.collection.filter(colItem => colItem.links != null && colItem.links.length > 0);
+		}
 	},
 
 	actions: {
@@ -24,6 +30,7 @@ export const useArraysStore = defineStore('arrays', {
 		},
 
 		addToHikingTrails(item) {
+			get
 			this.hikingTrails.push(item);
 		},
 
@@ -159,33 +166,33 @@ export const useArraysStore = defineStore('arrays', {
 
 			let links = [];
 			if (generic_links != null) {
-				let link = generic_links.split(';')[0];
-				link = link.trim();
-				if (link != null && link != '')
-					links.push(link);
-
-				// generic_links.split(';').forEach(link => {
-				// 	link = link.trim();
-				// 	if (link == null || link == '')
-				// 		return;
+				// let link = generic_links.split(';')[0];
+				// link = link.trim();
+				// if (link != null && link != '')
 				// 	links.push(link);
-				// });
+
+				generic_links.split(';').forEach(link => {
+					link = link.trim();
+					if (link == null || link == '')
+						return;
+					links.push(link);
+				});
 			}
 			if (drive_links != null) {
-				let link = drive_links.split(';')[0];
-				link = link.trim();
-				if (link != null || link != '') {
-					link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
-					links.push(link);
-				}
-
-				// drive_links.split(';').forEach(link => {
-				// 	link = link.trim();
-				// 	if (link == null || link == '')
-				// 		return;
+				// let link = drive_links.split(';')[0];
+				// link = link.trim();
+				// if (link != null || link != '') {
 				// 	link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
 				// 	links.push(link);
-				// });
+				// }
+
+				drive_links.split(';').forEach(link => {
+					link = link.trim();
+					if (link == null || link == '')
+						return;
+					link = 'https://lh3.googleusercontent.com/d/' + link.split('/')[5];
+					links.push(link);
+				});
 			}
 			return links;
 		},

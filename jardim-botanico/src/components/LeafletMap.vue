@@ -32,6 +32,10 @@
 	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-else>
 		<q-btn fab icon="ion-arrow-round-back" color="grey" @click="this.$router.push({ name: 'Home' });" />
 	</q-page-sticky>
+	<ImageGallery v-show="false" ref="galleries" v-for="colItem in arrays.collectionWithImages" :key="colItem.id"
+		:id="'colItem' + colItem.id" :images="colItem.links" />
+	<ImageGallery v-show="false" ref="galleries" v-for="poi in arrays.pointsOfInterestWithImages" :key="poi.id"
+		:id="'poi' + poi.id" :images="poi.links" />
 </template>
 
 <script>
@@ -40,11 +44,18 @@ import * as L from 'leaflet';
 import 'leaflet.locatecontrol';
 import 'leaflet.locatecontrol/dist/L.Control.Locate.css';
 
+import ImageGallery from 'src/components/ImageGallery.vue'
+
 import { defineComponent } from 'vue';
+import { ref } from 'vue';
 import { useArraysStore } from 'stores/arrays';
 
 export default defineComponent({
 	name: 'LeafletMap',
+	components: {
+		ImageGallery
+	},
+
 	data() {
 		return {
 			activeFilter: null,
@@ -74,14 +85,14 @@ export default defineComponent({
 
 				await this.arrays.loadCollection();
 				this.arrays.collection.filter(colItem => colItem.latitude != null && colItem.longitude != null).forEach(colItem => {
-					colItem.marker = this.createMarker(this.categories['Acervo'].color, colItem.latitude, colItem.longitude, colItem.nome, 'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem, colItem.links);
+					colItem.marker = this.createMarker(colItem.id, 'colItem', this.categories['Acervo'].color, colItem.latitude, colItem.longitude, colItem.nome, 'Outros nomes: ' + colItem.outros_nomes + '<br>' + 'Classificação: ' + colItem.classificacao + '<br>' + 'Origem: ' + colItem.origem, colItem.links);
 				});
 
 				// If we are not in a collection item page, load the points of interest
 				if (this.collectionItemId == null) {
 					await this.arrays.loadPointsOfInterest();
 					this.arrays.pointsOfInterest.forEach(poi => {
-						poi.marker = this.createMarker(this.categories[poi.categoria].color, poi.latitude, poi.longitude, poi.nome, poi.descricao, poi.links);
+						poi.marker = this.createMarker(poi.id, 'poi', this.categories[poi.categoria].color, poi.latitude, poi.longitude, poi.nome, poi.descricao, poi.links);
 					});
 				}
 
@@ -101,6 +112,7 @@ export default defineComponent({
 					{ icon: 'close', color: 'white', round: true }
 				]
 			});
+			console.error(error);
 		},
 
 		createMap() {
@@ -123,26 +135,36 @@ export default defineComponent({
 			this.map = map;
 		},
 
-		createMarker(color, latitude, longitude, name, description, links) {
+		createMarker(id, type, color, latitude, longitude, name, description, links) {
 			const icon = new L.Icon({ iconUrl: `assets/img/marker-icon-2x-${color}.png`, shadowUrl: 'assets/img/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
 			const marker = L.marker([latitude, longitude], { title: name, icon: icon });
 
-			let htmlName = '';
+			const popupContent = document.createElement('div');
+
 			if (name != null) {
-				htmlName = `<b>${name}</b><br>`;
+				let nameElement = document.createElement('b');
+				nameElement.innerHTML = name;
+				popupContent.appendChild(nameElement);
+				popupContent.appendChild(document.createElement('br'));
 			}
-			let htmlDescription = '';
 			if (description != null) {
-				htmlDescription = `${description}<br>`;
-			}
-			let htmlImg = '';
-			if (links != null) {
-				links.forEach(link => {
-					htmlImg += `<img src="${link}" class="leaflet-popup-img">`;
-				});
+				let descriptionElement = document.createElement('span');
+				descriptionElement.innerHTML = description;
+				popupContent.appendChild(descriptionElement);
+				popupContent.appendChild(document.createElement('br'));
 			}
 
-			marker.bindPopup(`${htmlName}${htmlDescription}${htmlImg}`, { className: 'leaflet-popup', maxWidth: 'null', maxHeight: 'null' }).openPopup();
+			for (let i = 0; i < this.$refs.galleries.length; i++) {
+				if (this.$refs.galleries[i].$el.id === type + id) {
+					const galleryElement = this.$refs.galleries[i].$el;
+					galleryElement.style.display = 'block';
+
+					popupContent.appendChild(galleryElement);
+					break;
+				}
+			}
+
+			marker.bindPopup(popupContent, { maxWidth: "auto", maxHeight: "auto", className: "leaflet-popup" }).openPopup();
 
 			return marker;
 		},
