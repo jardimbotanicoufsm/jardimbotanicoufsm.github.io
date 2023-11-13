@@ -1,37 +1,25 @@
 <template>
 	<div id="map"></div>
+	<!-- Add filters -->
+	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="ion-leaf" color="green"
+		:active="activeFilter == categories.Acervo.name" tooltip="Acervo"
+		:action="function () { filterMarkers('Acervo') }" />
+	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="ion-home" color="red"
+		:active="activeFilter == categories.Utilidade.name" tooltip="Utilidades"
+		:action="function () { filterMarkers('Utilidade') }" />
+	<LeafletMapButton position="top-right" :offset="[20, 160]" icon="ion-flower" color="orange"
+		:active="activeFilter == categories.Atrativo.name" tooltip="Atrativos"
+		:action="function () { filterMarkers('Atrativo') }" />
+	<!-- Remove filters -->
+	<LeafletMapButton v-if="activeFilter != null" position="top-right" :offset="[20, 230]" icon="ion-close" color="grey"
+		tooltip="Limpar filtros" :action="function () { filterMarkers(null) }" />
 
-	<q-page-sticky position="top-right" :offset="[20, 20]">
-		<q-btn :class="activeFilter == categories.Acervo.name ? 'q-btn--push' : ''" fab icon="ion-leaf" color="green"
-			@click="filterMarkers('Acervo')">
-			<q-tooltip>Acervo</q-tooltip>
-		</q-btn>
-	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 90]">
-		<q-btn :class="activeFilter == categories.Utilidade.name ? 'q-btn--push' : ''" fab icon="ion-home" color="red"
-			@click="filterMarkers('Utilidade')">
-			<q-tooltip>Utilidades</q-tooltip>
-		</q-btn>
-	</q-page-sticky>
-	<q-page-sticky position="top-right" :offset="[20, 160]">
-		<q-btn :class="activeFilter == categories.Atrativo.name ? 'q-btn--push' : ''" fab icon="ion-flower" color="orange"
-			@click="filterMarkers('Atrativo')">
-			<q-tooltip>Atrativos</q-tooltip>
-		</q-btn>
-	</q-page-sticky>
-	<!--Unselect filter-->
-	<q-page-sticky position="top-right" :offset="[20, 230]" v-if="activeFilter != null">
-		<q-btn fab icon="ion-close" color="grey" @click="filterMarkers(null)">
-			<q-tooltip>Limpar filtros</q-tooltip>
-		</q-btn>
-	</q-page-sticky>
+	<!-- Hiking trails -->
+	<LeafletMapButton v-if="hikingTrailId == null && collectionItemId == null" position="bottom-left" :offset="[20, 20]"
+		icon="ion-walk" color="grey" tooltip="Trilhas" :action="function () { redirect('/hikingTrails') }" />
+	<LeafletMapButton v-else position="bottom-left" :offset="[20, 20]" icon="ion-arrow-round-back" color="grey"
+		tooltip="Voltar" :action="function () { redirect('/hikingTrails') }" />
 
-	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-if="hikingTrailId == null && collectionItemId == null">
-		<q-btn fab icon="ion-walk" color="grey" @click="this.$router.push('/hikingTrails');" />
-	</q-page-sticky>
-	<q-page-sticky position="bottom-left" :offset="[20, 20]" v-else>
-		<q-btn fab icon="ion-arrow-round-back" color="grey" @click="this.$router.push({ name: 'Home' });" />
-	</q-page-sticky>
 	<ImageGallery v-show="false" ref="galleries" v-for="colItem in arrays.collectionWithImages" :key="colItem.id"
 		:id="'colItem' + colItem.id" :images="colItem.links" />
 	<ImageGallery v-show="false" ref="galleries" v-for="poi in arrays.pointsOfInterestWithImages" :key="poi.id"
@@ -44,16 +32,17 @@ import * as L from 'leaflet';
 import 'leaflet.locatecontrol';
 import 'leaflet.locatecontrol/dist/L.Control.Locate.css';
 
-import ImageGallery from 'src/components/ImageGallery.vue'
+import ImageGallery from 'src/components/ImageGallery.vue';
+import LeafletMapButton from 'src/components/LeafletMapButton.vue';
 
 import { defineComponent } from 'vue';
-import { ref } from 'vue';
 import { useArraysStore } from 'stores/arrays';
 
 export default defineComponent({
 	name: 'LeafletMap',
 	components: {
-		ImageGallery
+		ImageGallery,
+		LeafletMapButton,
 	},
 
 	data() {
@@ -238,6 +227,10 @@ export default defineComponent({
 				.filter(colItem => colItem.marker != null)
 				.forEach(colItem => colItem.marker.remove());
 		},
+
+		redirect(to) {
+			this.$router.push(to);
+		}
 	},
 });
 </script>

@@ -1,5 +1,9 @@
 <template>
-  <q-btn class="leaflet-map-button" round :color="color" :icon="icon" :style="{ top: top, left: left }" />
+  <q-page-sticky :position="position" :offset="offset">
+    <q-btn :class="active ? 'q-btn--push' : ''" fab :icon="icon" :color="color" @click="action">
+      <q-tooltip>{{ tooltip }}</q-tooltip>
+    </q-btn>
+  </q-page-sticky>
 </template>
 
 <script>
@@ -8,6 +12,14 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'LeafletMapButton',
   props: {
+    position: {
+      type: String,
+      required: true,
+    },
+    offset: {
+      type: Array,
+      required: true,
+    },
     icon: {
       type: String,
       required: true,
@@ -16,21 +28,18 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    top: {
-      type: String,
-      required: true,
+    active: {
+      type: Boolean,
+      default: false,
     },
-    left: {
+    tooltip: {
       type: String,
-      default: '10px',
+      default: '',
+    },
+    action: {
+      type: Function,
+      default: () => { },
     },
   },
 });
 </script>
-
-<style scoped>
-.leaflet-map-button {
-  position: absolute;
-  z-index: 1000;
-}
-</style>
