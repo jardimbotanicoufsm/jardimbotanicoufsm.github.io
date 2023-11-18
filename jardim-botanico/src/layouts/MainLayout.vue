@@ -17,7 +17,8 @@
 			<q-tabs switch-indicator>
 				<q-route-tab name="acervo" icon="ion-filing" exact to="/collection" />
 				<q-route-tab name="map" icon="ion-map" exact to="/" />
-				<q-route-tab name="menu" icon="ion-menu" exact to="/menu" />
+				<q-route-tab name="about" icon="ion-information-circle" exact to="/about" />
+				<!-- <q-route-tab name="menu" icon="ion-menu" exact to="/menu" /> -->
 			</q-tabs>
 		</q-footer>
 

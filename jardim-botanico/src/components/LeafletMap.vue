@@ -1,7 +1,7 @@
 <template>
 	<div id="map"></div>
 	<!-- Add filters -->
-	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="ion-leaf" color="green"
+	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="ion-filing" color="green"
 		:active="activeFilter == categories.Acervo.name" tooltip="Acervo"
 		:action="function () { filterMarkers('Acervo') }" />
 	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="ion-home" color="red"
