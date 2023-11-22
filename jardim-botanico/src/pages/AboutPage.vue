@@ -30,28 +30,28 @@ import SocialMediaLink from 'src/components/SocialMediaLink.vue'
 
 const socialMediaLinks = [
     {
-        icon: 'img:icons/instagram.svg',
+        icon: 'img:assets/icons/instagram.svg',
         link: 'https://www.instagram.com/jardimbotanicodaufsm',
         backgroundColor: '#49654D',
         textColor: '#FD1D1D',
         tooltip: 'Instagram'
     },
     {
-        icon: 'img:icons/facebook.svg',
+        icon: 'img:assets/icons/facebook.svg',
         link: 'https://m.facebook.com/JardimBotanicoDeSantaMaria',
         backgroundColor: '#49654D',
         textColor: '#0165E1',
         tooltip: 'Facebook'
     },
     {
-        icon: 'img:icons/youtube.svg',
+        icon: 'img:assets/icons/youtube.svg',
         link: 'https://www.youtube.com/@JardimBotanicodaUFSM',
         backgroundColor: '#49654D',
         textColor: 'red',
         tooltip: 'Youtube'
     },
     {
-        icon: 'img:icons/website.svg',
+        icon: 'img:assets/icons/website.svg',
         link: 'https://www.ufsm.br/orgaos-suplementares/jardim-botanico',
         backgroundColor: '#49654D',
         textColor: 'green',

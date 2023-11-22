@@ -16,13 +16,13 @@
 		<q-footer elevated>
 			<q-tabs switch-indicator>
 				<q-route-tab name="acervo" exact to="/collection">
-					<q-icon name="img:icons/collectionItem.svg" size="md" />
+					<q-icon name="img:assets/icons/collectionItem.svg" size="md" />
 				</q-route-tab>
 				<q-route-tab name="map" exact to="/">
-					<q-icon name="img:icons/map.svg" size="md" />
+					<q-icon name="img:assets/icons/map.svg" size="md" />
 				</q-route-tab>
 				<q-route-tab name="about" exact to="/about">
-					<q-icon name="img:icons/about.svg" size="md" />
+					<q-icon name="img:assets/icons/about.svg" size="md" />
 				</q-route-tab>
 			</q-tabs>
 		</q-footer>
