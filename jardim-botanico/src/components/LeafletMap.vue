@@ -1,13 +1,13 @@
 <template>
 	<div id="map"></div>
 	<!-- Add filters -->
-	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="ion-filing" color="green"
+	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="img:icons/collectionItem.svg" color="green"
 		:active="activeFilter == categories.Acervo.name" tooltip="Acervo"
 		:action="function () { filterMarkers('Acervo') }" />
-	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="ion-home" color="red"
+	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="img:icons/utility.svg" color="red"
 		:active="activeFilter == categories.Utilidade.name" tooltip="Utilidades"
 		:action="function () { filterMarkers('Utilidade') }" />
-	<LeafletMapButton position="top-right" :offset="[20, 160]" icon="ion-flower" color="orange"
+	<LeafletMapButton position="top-right" :offset="[20, 160]" icon="img:icons/attraction.svg" color="orange"
 		:active="activeFilter == categories.Atrativo.name" tooltip="Atrativos"
 		:action="function () { filterMarkers('Atrativo') }" />
 	<!-- Remove filters -->
@@ -16,7 +16,8 @@
 
 	<!-- Hiking trails -->
 	<LeafletMapButton v-if="hikingTrailId == null && collectionItemId == null" position="bottom-left" :offset="[20, 20]"
-		icon="ion-walk" color="grey" tooltip="Trilhas" :action="function () { redirect('/hikingTrails') }" />
+		icon="img:icons/hikingTrail.svg" color="grey" tooltip="Trilhas"
+		:action="function () { redirect('/hikingTrails') }" />
 	<LeafletMapButton v-else position="bottom-left" :offset="[20, 20]" icon="ion-arrow-round-back" color="grey"
 		tooltip="Voltar" :action="function () { redirect('/hikingTrails') }" />
 

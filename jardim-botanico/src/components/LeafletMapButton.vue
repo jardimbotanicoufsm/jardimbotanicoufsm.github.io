@@ -1,6 +1,7 @@
 <template>
   <q-page-sticky :position="position" :offset="offset">
-    <q-btn :class="active ? 'q-btn--push' : ''" fab :icon="icon" :color="color" @click="action">
+    <q-btn :class="active ? 'q-btn--push' : ''" round size="lg" :color="color" @click="action">
+      <q-icon :name="icon" size="md" />
       <q-tooltip>{{ tooltip }}</q-tooltip>
     </q-btn>
   </q-page-sticky>

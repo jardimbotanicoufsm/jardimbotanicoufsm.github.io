@@ -15,10 +15,15 @@
 
 		<q-footer elevated>
 			<q-tabs switch-indicator>
-				<q-route-tab name="acervo" icon="ion-filing" exact to="/collection" />
-				<q-route-tab name="map" icon="ion-map" exact to="/" />
-				<q-route-tab name="about" icon="ion-information-circle" exact to="/about" />
-				<!-- <q-route-tab name="menu" icon="ion-menu" exact to="/menu" /> -->
+				<q-route-tab name="acervo" exact to="/collection">
+					<q-icon name="img:icons/collectionItem.svg" size="md" />
+				</q-route-tab>
+				<q-route-tab name="map" exact to="/">
+					<q-icon name="img:icons/map.svg" size="md" />
+				</q-route-tab>
+				<q-route-tab name="about" exact to="/about">
+					<q-icon name="img:icons/about.svg" size="md" />
+				</q-route-tab>
 			</q-tabs>
 		</q-footer>
 
