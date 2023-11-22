@@ -1,8 +1,5 @@
 # Jardim Botânico da UFSM
 
-![Screenshot do projeto](screenshot.png "Screenshot do projeto").
-
-
 #### Descrição
 
 O projeto visa oferecer uma ferramenta que facilite e oriente visitas ao Jardim Botânico da UFSM através da exposição dos seus itens de diferentes maneiras. 
