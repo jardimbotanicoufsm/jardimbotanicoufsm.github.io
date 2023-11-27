@@ -18,8 +18,10 @@
 	<LeafletMapButton v-if="hikingTrailId == null && collectionItemId == null" position="bottom-left" :offset="[20, 20]"
 		icon="img:assets/icons/hikingTrail.svg" color="grey" tooltip="Trilhas"
 		:action="function () { redirect('/hikingTrails') }" />
-	<LeafletMapButton v-else position="bottom-left" :offset="[20, 20]" icon="ion-arrow-round-back" color="grey"
-		tooltip="Voltar" :action="function () { redirect('/hikingTrails') }" />
+	<LeafletMapButton v-else-if="hikingTrailId != null" position="bottom-left" :offset="[20, 20]"
+		icon="ion-arrow-round-back" color="grey" tooltip="Voltar" :action="function () { redirect('/hikingTrails') }" />
+	<LeafletMapButton v-else-if="collectionItemId != null" position="bottom-left" :offset="[20, 20]"
+		icon="ion-arrow-round-back" color="grey" tooltip="Voltar" :action="function () { redirect('/collection') }" />
 
 	<ImageGallery v-show="false" ref="galleries" v-for="colItem in arrays.collectionWithImages" :key="colItem.id"
 		:id="'colItem' + colItem.id" :images="colItem.links" />
