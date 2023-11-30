@@ -1,22 +1,22 @@
 <template>
 	<div id="map"></div>
 	<!-- Add filters -->
-	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="img:assets/icons/collectionItem.svg" color="green"
-		:active="activeFilter == categories.Acervo.name" tooltip="Acervo"
-		:action="function () { filterMarkers('Acervo') }" />
-	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="img:assets/icons/utility.svg" color="red"
-		:active="activeFilter == categories.Utilidade.name" tooltip="Utilidades"
-		:action="function () { filterMarkers('Utilidade') }" />
-	<LeafletMapButton position="top-right" :offset="[20, 160]" icon="img:assets/icons/attraction.svg" color="orange"
+	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="img:assets/icons/attraction.svg" color="orange"
 		:active="activeFilter == categories.Atrativo.name" tooltip="Atrativos"
 		:action="function () { filterMarkers('Atrativo') }" />
+	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="img:assets/icons/utility.svg" color="pink"
+		:active="activeFilter == categories.Utilidade.name" tooltip="Utilidades"
+		:action="function () { filterMarkers('Utilidade') }" />
+	<LeafletMapButton position="top-right" :offset="[20, 160]" icon="img:assets/icons/collectionItem.svg" color="green"
+		:active="activeFilter == categories.Acervo.name" tooltip="Acervo"
+		:action="function () { filterMarkers('Acervo') }" />
 	<!-- Remove filters -->
 	<LeafletMapButton v-if="activeFilter != null" position="top-right" :offset="[20, 230]" icon="ion-close" color="grey"
 		tooltip="Limpar filtros" :action="function () { filterMarkers(null) }" />
 
 	<!-- Hiking trails -->
 	<LeafletMapButton v-if="hikingTrailId == null && collectionItemId == null" position="bottom-left" :offset="[20, 20]"
-		icon="img:assets/icons/hikingTrail.svg" color="grey" tooltip="Trilhas"
+		icon="img:assets/icons/hikingTrail.svg" color="purple" tooltip="Trilhas"
 		:action="function () { redirect('/hikingTrails') }" />
 	<LeafletMapButton v-else-if="hikingTrailId != null" position="bottom-left" :offset="[20, 20]"
 		icon="ion-arrow-round-back" color="grey" tooltip="Voltar" :action="function () { redirect('/hikingTrails') }" />
@@ -133,13 +133,13 @@ export default defineComponent({
 
 			const popupContent = document.createElement('div');
 
-			if (name != null) {
+			if (name != null && name !== '') {
 				let nameElement = document.createElement('b');
 				nameElement.innerHTML = name;
 				popupContent.appendChild(nameElement);
 				popupContent.appendChild(document.createElement('br'));
 			}
-			if (description != null) {
+			if (description != null && description !== '') {
 				let descriptionElement = document.createElement('span');
 				descriptionElement.innerHTML = description;
 				popupContent.appendChild(descriptionElement);
@@ -243,5 +243,17 @@ export default defineComponent({
 	height: calc(100vh - 110px);
 	width: 100%;
 	z-index: 0;
+}
+
+.leaflet-popup {
+	min-width: 60vw;
+}
+
+.leaflet-popup b {
+	font-size: 1.2rem;
+}
+
+.leaflet-popup span {
+	font-size: 1rem;
 }
 </style>
