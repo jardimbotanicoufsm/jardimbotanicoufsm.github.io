@@ -254,6 +254,6 @@ export default defineComponent({
 }
 
 .leaflet-popup span {
-	font-size: 1rem;
+	font-size: 0.9rem;
 }
 </style>

@@ -67,13 +67,11 @@ export default defineComponent({
 </script>
 <style>
 .title {
-    font-size: 1.2rem;
-    /* bold */
+    font-size: 1.0rem;
     font-weight: 500;
 }
 
-/* caption */
 .caption {
-    font-size: 1.0rem;
+    font-size: 0.9rem;
 }
 </style>
