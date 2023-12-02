@@ -1,27 +1,26 @@
 <template>
 	<div id="map"></div>
 	<!-- Add filters -->
-	<LeafletMapButton position="top-right" :offset="[20, 20]" icon="img:assets/icons/attraction.svg" color="orange"
-		:active="activeFilter == categories.Atrativo.name" tooltip="Atrativos"
+	<LeafletMapButton position="top-right" :offset="[25, 20]" icon="img:assets/icons/attraction.svg" color="orange"
+		:active="activeFilter == categories.Atrativo.name" label="Atrativos"
 		:action="function () { filterMarkers('Atrativo') }" />
-	<LeafletMapButton position="top-right" :offset="[20, 90]" icon="img:assets/icons/utility.svg" color="pink"
-		:active="activeFilter == categories.Utilidade.name" tooltip="Utilidades"
+	<LeafletMapButton position="top-right" :offset="[25, 110]" icon="img:assets/icons/utility.svg" color="pink"
+		:active="activeFilter == categories.Utilidade.name" label="Utilidades"
 		:action="function () { filterMarkers('Utilidade') }" />
-	<LeafletMapButton position="top-right" :offset="[20, 160]" icon="img:assets/icons/collectionItem.svg" color="green"
-		:active="activeFilter == categories.Acervo.name" tooltip="Acervo"
-		:action="function () { filterMarkers('Acervo') }" />
+	<LeafletMapButton position="top-right" :offset="[25, 200]" icon="img:assets/icons/collectionItem.svg" color="green"
+		:active="activeFilter == categories.Acervo.name" label="Acervo" :action="function () { filterMarkers('Acervo') }" />
 	<!-- Remove filters -->
-	<LeafletMapButton v-if="activeFilter != null" position="top-right" :offset="[20, 230]" icon="ion-close" color="grey"
-		tooltip="Limpar filtros" :action="function () { filterMarkers(null) }" />
+	<LeafletMapButton v-if="activeFilter != null" position="top-right" :offset="[25, 290]" icon="ion-close" color="grey"
+		label="Limpar filtros" :action="function () { filterMarkers(null) }" />
 
 	<!-- Hiking trails -->
-	<LeafletMapButton v-if="hikingTrailId == null && collectionItemId == null" position="bottom-left" :offset="[20, 20]"
-		icon="img:assets/icons/hikingTrail.svg" color="purple" tooltip="Trilhas"
+	<LeafletMapButton v-if="hikingTrailId == null && collectionItemId == null" position="bottom-left" :offset="[25, 20]"
+		icon="img:assets/icons/hikingTrail.svg" color="purple" label="Trilhas"
 		:action="function () { redirect('/hikingTrails') }" />
-	<LeafletMapButton v-else-if="hikingTrailId != null" position="bottom-left" :offset="[20, 20]"
-		icon="ion-arrow-round-back" color="grey" tooltip="Voltar" :action="function () { redirect('/hikingTrails') }" />
-	<LeafletMapButton v-else-if="collectionItemId != null" position="bottom-left" :offset="[20, 20]"
-		icon="ion-arrow-round-back" color="grey" tooltip="Voltar" :action="function () { redirect('/collection') }" />
+	<LeafletMapButton v-else-if="hikingTrailId != null" position="bottom-left" :offset="[25, 20]"
+		icon="ion-arrow-round-back" color="grey" :action="function () { redirect('/hikingTrails') }" />
+	<LeafletMapButton v-else-if="collectionItemId != null" position="bottom-left" :offset="[25, 20]"
+		icon="ion-arrow-round-back" color="grey" :action="function () { redirect('/collection') }" />
 
 	<ImageGallery v-show="false" ref="galleries" v-for="colItem in arrays.collectionWithImages" :key="colItem.id"
 		:id="'colItem' + colItem.id" :images="colItem.links" />
@@ -250,10 +249,10 @@ export default defineComponent({
 }
 
 .leaflet-popup b {
-	font-size: 1.2rem;
+	font-size: 1.1rem;
 }
 
 .leaflet-popup span {
-	font-size: 1rem;
+	font-size: 0.9rem;
 }
 </style>
